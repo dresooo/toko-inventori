@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductRecipe extends Model
 {
+    protected $primaryKey = 'recipe_id';
     protected $fillable = ['product_id','raw_material_id','quantity_needed'];
 
     public function rawMaterial()
@@ -17,6 +18,7 @@ class ProductRecipe extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
+    
 }

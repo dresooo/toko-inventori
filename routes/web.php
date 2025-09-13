@@ -5,6 +5,8 @@ use App\Models\Product;
 use App\Http\Controllers\Api\ProductController;
 
 
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -27,3 +29,9 @@ Route::get('/dashboard/product', function () {
 Route::get('/dashboard/rawmaterial', function () {
     return view('dashboard.rawmaterial');
 })->name('dashboard.rawmaterial');
+
+Route::get('/dashboard/productrecipe', function () {
+    return view('dashboard.productrecipe');
+})->name('dashboard.productrecipe');
+
+

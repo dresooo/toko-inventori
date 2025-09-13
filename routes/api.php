@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\RawMaterialController;
+use App\Http\Controllers\Api\ProductRecipeController;
+
 
 // Untuk API Product
 Route::apiResource('products', ProductController::class);
@@ -25,7 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
 
-
+//Routes API STOCK
 Route::get('/stocks', [StockController::class, 'index']);
-Route::put('/stocks/{id}', [StockController::class, 'update']); 
+Route::put('/stocks/{id}', [StockController::class, 'update']);
+
+//ROUTES API RAW MATERIALS
 Route::apiResource('raw-materials', RawMaterialController::class);
+
+//ROUTES API PRODUCT RECIPESS
+Route::get('/product-recipe', [ProductRecipeController::class, 'index']);
