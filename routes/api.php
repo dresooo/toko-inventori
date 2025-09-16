@@ -15,7 +15,8 @@ Route::put('/products/{id}', [ProductController::class, 'update']);
 //Untuk Api Login Register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-
+//ambil prodcut list
+Route::get('/products/list', [ProductController::class, 'list']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -36,3 +37,10 @@ Route::apiResource('raw-materials', RawMaterialController::class);
 
 //ROUTES API PRODUCT RECIPESS
 Route::get('/product-recipe', [ProductRecipeController::class, 'index']);
+Route::put('/product-recipe/{id}', [ProductRecipeController::class, 'update']);
+Route::post('/product-recipe', [ProductRecipeController::class, 'store']);
+Route::get('/product-recipe/{productId}', [ProductRecipeController::class, 'getByProduct']);
+Route::put('/product-recipe', [ProductRecipeController::class, 'updateByProductAndMaterial']);
+Route::delete('/product-recipe/{id}', [ProductRecipeController::class, 'destroy']);
+// Hapus semua recipe berdasarkan product_id
+Route::delete('/product-recipe/product/{productId}', [ProductRecipeController::class, 'destroyByProduct']);

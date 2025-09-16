@@ -34,4 +34,9 @@ Route::get('/dashboard/productrecipe', function () {
     return view('dashboard.productrecipe');
 })->name('dashboard.productrecipe');
 
+Route::get('/dashboard/stock', function () {
+    return view('dashboard.stock');
+})->name('dashboard.stock');
+
+
 

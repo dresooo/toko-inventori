@@ -1,11 +1,24 @@
 async function loadProducts() {
-    let response = await fetch("/api/products");
-    let products = await response.json();
+    // Ambil data produk & stok
+    const products = await fetch("/api/products").then((res) => res.json());
+    const stockData = await fetch("/api/stocks").then((res) => res.json());
 
+    // Gabungkan manual pakai product_id
+    const merged = products.map((p) => {
+        const stockInfo = stockData.products.find(
+            (s) => s.product_id === p.product_id
+        );
+        return {
+            ...p,
+            max_production: stockInfo ? stockInfo.max_production : 0,
+        };
+    });
+
+    // Render ke grid
     const grid = document.getElementById("product-grid");
     grid.innerHTML = "";
 
-    products.forEach((product, index) => {
+    merged.forEach((product, index) => {
         // Card
         const card = document.createElement("div");
         card.className =
@@ -13,23 +26,46 @@ async function loadProducts() {
 
         card.innerHTML = `
             <figure class="aspect-square overflow-hidden">
-                <img src="data:image/jpeg;base64,${product.gambar}"
-                    alt="${product.nama}"
-                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    onclick="openProductModal(${index})"/>
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title text-lg font-bold">${product.nama}</h2>
-                <p class="text-sm text-gray-600 mb-2">${product.deskripsi.substring(
-                    0,
-                    100
-                )}...</p>
-                <div class="text-xl font-bold text-primary mb-4">
+    <img src="data:image/jpeg;base64,${product.gambar}"
+        alt="${product.nama}"
+        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+        onclick="openProductModal(${index})"/>
+</figure>
+<div class="card-body">
+    <h2 class="card-title text-lg font-bold">
+        ${product.nama}
+    </h2>
+    <p class="text-sm text-gray-600 mb-2">
+        ${product.deskripsi.substring(0, 100)}...
+    </p>
+    <!-- Harga + Stok sejajar -->
+        <div class="flex justify-between items-center mb-4">
+            <!-- Harga -->
+                <div class="text-xl font-bold text-primary">
                     Rp ${Number(product.harga).toLocaleString("id-ID")}
-                </div>ok
+                </div>
+                <!-- Stok -->
+                    <div class="text-sm">
+                        <span class="font-medium ${
+                            product.max_production > 0
+                                ? "text-green-600"
+                                : "text-red-600"
+                        }">
+                ${
+                    product.max_production > 0
+                        ? product.max_production + " tersedia"
+                        : "Habis"
+                }
+                        </span>
+                    </div>
+                </div>
                 <div class="card-actions justify-end">
-                    <button class="btn btn-primary btn-sm" onclick="alert('Buy Now clicked!')">Buy Now</button>
-                    <button class="btn btn-outline btn-sm" onclick="openProductModal(${index})">Detail</button>
+                    <button class="btn btn-primary btn-sm" onclick="alert('Buy Now clicked!')">
+                        Buy Now
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="openProductModal(${index})">
+                        Detail
+                    </button>
                 </div>
             </div>
         `;
@@ -47,7 +83,6 @@ async function loadProducts() {
                             <img src="data:image/jpeg;base64,${product.gambar}"
                                 alt="${product.nama}"
                                 class="w-full aspect-square object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-shadow duration-300" />
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-xl flex items-center justify-center opacity-0"></div>
                         </div>
                     </div>
                     <div class="flex flex-col h-full space-y-6">
@@ -64,13 +99,14 @@ async function loadProducts() {
                                 <div class="w-2 h-2 bg-primary rounded-full"></div>
                                 <span class="text-gray-600">Stok:</span>
                                 <span class="font-medium ${
-                                    product.stok > 0
+                                    product.max_production > 0
                                         ? "text-green-600"
                                         : "text-red-600"
                                 }">
                                     ${
-                                        product.stok > 0
-                                            ? product.stok + " tersedia"
+                                        product.max_production > 0
+                                            ? product.max_production +
+                                              " tersedia"
                                             : "Habis"
                                     }
                                 </span>
@@ -105,8 +141,6 @@ async function loadProducts() {
             <form method="dialog" class="modal-backdrop">
                 <button>close</button>
             </form>
-
-            
         `;
         document.body.appendChild(modal);
     });

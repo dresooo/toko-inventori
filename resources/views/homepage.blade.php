@@ -156,7 +156,8 @@
         'resources/js/login.js',
         'resources/js/register.js',
         'resources/js/profil.js',
-        'resources/js/logout.js'
+        'resources/js/logout.js',
+    
     ])
 
 </html>

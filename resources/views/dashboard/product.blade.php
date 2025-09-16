@@ -7,7 +7,7 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {{-- <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-6 rounded-xl shadow-sm border">
                 <div class="flex items-center">
                     <div class="p-3 bg-blue-100 rounded-lg">
@@ -52,13 +52,13 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="flex justify-end">
             <!-- Tombol Tambah Produk -->
             <button type="button" id="openAddModalBtn" onclick="openAddModal()"
                 class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white 
-                                                       hover:bg-blue-700 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 mb-5">
+                                                               hover:bg-blue-700 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 mb-5">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -105,15 +105,10 @@
                         class="input input-bordered w-full" />
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="block mb-1 font-medium">
                     <div>
                         <label class="block mb-1 font-medium">Harga *</label>
                         <input type="number" name="harga" id="addProductPrice" placeholder="0" required min="0" step="0.01"
-                            class="input input-bordered w-full" />
-                    </div>
-                    <div>
-                        <label class="block mb-1 font-medium">Stok *</label>
-                        <input type="number" name="stok" id="addProductStock" placeholder="0" required min="0"
                             class="input input-bordered w-full" />
                     </div>
                 </div>
@@ -176,15 +171,10 @@
                         class="input input-bordered w-full" />
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="block mb-1 font-medium">
                     <div>
                         <label class="block mb-1 font-medium">Harga *</label>
                         <input type="number" name="harga" id="editProductPrice" placeholder="0" required min="0" step="0.01"
-                            class="input input-bordered w-full" />
-                    </div>
-                    <div>
-                        <label class="block mb-1 font-medium">Stok *</label>
-                        <input type="number" name="stok" id="editProductStock" placeholder="0" required min="0"
                             class="input input-bordered w-full" />
                     </div>
                 </div>

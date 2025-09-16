@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class ProductRecipe extends Model
 {
     protected $primaryKey = 'recipe_id';
-    protected $fillable = ['product_id','raw_material_id','quantity_needed'];
+    protected $fillable = [
+    'product_id',
+    'raw_material_id',
+    'quantity_needed',
+];
 
     public function rawMaterial()
     {

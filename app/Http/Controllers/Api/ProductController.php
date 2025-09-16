@@ -34,7 +34,12 @@ public function show($id)
     return response()->json($product, 200, [], JSON_UNESCAPED_UNICODE);
 }
 
-
+// GET daftar produk (untuk dropdown)
+public function list()
+{
+    $products = Product::select('product_id', 'nama')->get();
+    return response()->json($products, 200);
+}
     // POST tambah produk
 public function store(Request $request)
 {

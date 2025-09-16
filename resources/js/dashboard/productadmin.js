@@ -9,18 +9,35 @@ async function loadProducts() {
     emptyState.classList.add("hidden");
 
     try {
-        let response = await fetch("/api/products");
-        let products = await response.json();
+        // ambil products dan stock data
+        const [productRes, stockRes] = await Promise.all([
+            fetch("/api/products").then((res) => res.json()),
+            fetch("/api/stocks").then((res) => res.json()),
+        ]);
+
+        const products = productRes;
+        const stockData = stockRes.products;
+
+        // gabungkan manual
+        const merged = products.map((p) => {
+            const stockInfo = stockData.find(
+                (s) => s.product_id === p.product_id
+            );
+            return {
+                ...p,
+                max_production: stockInfo ? stockInfo.max_production : 0,
+            };
+        });
 
         loadingSkeleton.classList.add("hidden");
         grid.innerHTML = "";
 
-        if (products.length === 0) {
+        if (merged.length === 0) {
             emptyState.classList.remove("hidden");
             return;
         }
 
-        products.forEach((product) => {
+        merged.forEach((product) => {
             const row = document.createElement("div");
             row.className =
                 "bg-white border rounded-lg shadow-sm p-4 flex items-center justify-between hover:shadow-md transition relative";
@@ -40,8 +57,6 @@ async function loadProducts() {
             <p class="text-gray-600 text-sm mt-2 max-w-lg whitespace-normal break-words">
                 ${product.deskripsi}
             </p>
-
-            
         </div>
     </div>
     
@@ -51,9 +66,13 @@ async function loadProducts() {
                 Rp ${Number(product.harga).toLocaleString("id-ID")}
             </p>
             <p class="text-sm ${
-                product.stok > 0 ? "text-green-600" : "text-red-600"
+                product.max_production > 0 ? "text-green-600" : "text-red-600"
             }">
-                ${product.stok > 0 ? product.stok + " tersedia" : "Habis"}
+                ${
+                    product.max_production > 0
+                        ? product.max_production + " tersedia"
+                        : "Habis"
+                }
             </p>
         </div>
         <div class="flex gap-2">
@@ -68,11 +87,10 @@ async function loadProducts() {
                     class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm">
                 Hapus
             </button>
-            
         </div>
     </div>
     
-    <!-- Created and Updated Info - Positioned absolutely at bottom right -->
+    <!-- Created and Updated Info -->
     <div class="absolute bottom-4 right-4 text-right text-xs text-gray-500">
         <p>Dibuat: ${new Date(product.created_at).toLocaleDateString("id-ID", {
             year: "numeric",
@@ -255,7 +273,6 @@ window.editProduct = function (product) {
     document.getElementById("editProductId").value = product.product_id;
     document.getElementById("editProductName").value = product.nama;
     document.getElementById("editProductPrice").value = product.harga;
-    document.getElementById("editProductStock").value = product.stok;
     document.getElementById("editProductDescription").value =
         product.deskripsi || "";
 
@@ -309,9 +326,6 @@ document
                 harga:
                     formData.get("harga") ||
                     document.getElementById("editProductPrice").value,
-                stok:
-                    formData.get("stok") ||
-                    document.getElementById("editProductStock").value,
                 deskripsi:
                     formData.get("deskripsi") ||
                     document.getElementById("editProductDescription").value,
