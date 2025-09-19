@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\RawMaterialController;
 use App\Http\Controllers\Api\ProductRecipeController;
-
+use App\Http\Controllers\Api\OrderController;
 
 // Untuk API Product
 Route::apiResource('products', ProductController::class);
@@ -44,3 +44,11 @@ Route::put('/product-recipe', [ProductRecipeController::class, 'updateByProductA
 Route::delete('/product-recipe/{id}', [ProductRecipeController::class, 'destroy']);
 // Hapus semua recipe berdasarkan product_id
 Route::delete('/product-recipe/product/{productId}', [ProductRecipeController::class, 'destroyByProduct']);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::put('/orders/{id}', [OrderController::class, 'update']);
+});

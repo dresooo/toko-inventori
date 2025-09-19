@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     localStorage.setItem("access_token", data.access_token);
                     localStorage.setItem("user_name", data.user.name);
                     localStorage.setItem("user_type", data.user.user_type);
+                    localStorage.setItem("user_id", data.user.id);
                     //update navbar ketika berhasil login
                     updateNavbar();
                     loginModal.close(); // tutup modal setelah login sukses

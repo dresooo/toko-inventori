@@ -68,60 +68,11 @@
         </div>
 
 
-        <div class="hero w-full bg-base-200 pt-10 pb-10">
-            <div class="hero-content mx-auto flex-col lg:flex-row-reverse items-center lg:items-start">
 
-                <!-- Gambar -->
-                <img src="img/Pin.png" class="max-w-sm rounded-lg shadow-2xl" />
 
-                <!-- Konten -->
-                <div class="lg:mr-20 mt-6 lg:mt-0">
-                    <h1 class="text-3xl font-bold">
-                        Ekspresikan Gayamu dengan Pin Custom Unik!
-                    </h1>
-                    <p class="py-6">
-                        Buat pin sesuai gaya dan kepribadianmu — desain unik, kualitas premium, dan cocok untuk semua
-                        momen spesial.
-                    </p>
-
-                    <div class="flex flex-col items-start gap-6">
-                        <!-- Button -->
-                        <button class="btn btn-primary">Get Started</button>
-
-                        <!-- Stats -->
-                        <div class="stats lg:stats-horizontal shadow">
-                            <div class="stat">
-                                <div class="stat-title">Orders</div>
-                                <div class="stat-value">1000+</div>
-                                <div class="stat-desc">Jan 1st - Feb 1st</div>
-                            </div>
-
-                            <div class="stat">
-                                <div class="stat-title">Item Sold</div>
-                                <div class="stat-value">10000+</div>
-                                <div class="stat-desc">↗︎ 400 (22%)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero bg-base-200 w-full py-8">
-            <div class="hero-content w-full max-w-7xl">
-                <div class="w-full">
-                    <h2 class="text-3xl font-bold text-center mb-8">OUR PRODUCTS</h2>
-
-                    <div class="overflow-x-auto">
-                        <div id="product-grid"
-                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-w-max lg:min-w-0">
-                            <!-- Produk akan di-generate oleh JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <x-card-display />
+        <x-show-product />
+    
 
         {{-- fOOTER --}}
         <footer class="footer sm:footer-horizontal bg-neutral text-neutral-content p-10">
@@ -157,7 +108,7 @@
         'resources/js/register.js',
         'resources/js/profil.js',
         'resources/js/logout.js',
-    
+
     ])
 
 </html>

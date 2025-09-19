@@ -12,6 +12,7 @@ export default defineConfig({
                 "./register.js",
                 "./profil.js",
                 "./logout.js",
+                "./order.js",
                 "./productstock.js",
                 "./dashboard/productadmin.js",
                 "./dashboard/rawmaterial.js",

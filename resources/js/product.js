@@ -60,9 +60,11 @@ async function loadProducts() {
                     </div>
                 </div>
                 <div class="card-actions justify-end">
-                    <button class="btn btn-primary btn-sm" onclick="alert('Buy Now clicked!')">
-                        Buy Now
-                    </button>
+                    <button 
+  class="btn btn-primary btn-sm" 
+  onclick="handleBuyNow(${product.product_id}, ${product.max_production})">
+  Buy Now
+</button>
                     <button class="btn btn-outline btn-sm" onclick="openProductModal(${index})">
                         Detail
                     </button>
@@ -127,7 +129,11 @@ async function loadProducts() {
                             </div>
                         </div>
                         <div class="flex gap-3 mt-auto">
-                            <button class="btn btn-primary flex-1 gap-2">
+                            <button 
+                                class="btn btn-primary flex-1 gap-2"
+                                onclick="handleBuyNow(${product.product_id}, ${
+            product.max_production
+        })">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5-2.5M7 13l2.5 2.5M17 17a2 2 0 11-4 0 2 2 0 014 0zM9 17a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -146,6 +152,25 @@ async function loadProducts() {
     });
 }
 
+//untuk handle click buy now tapi beum login
+window.handleBuyNow = function (productId, stock) {
+    const token = localStorage.getItem("access_token");
+
+    // cek stok dulu
+    if (stock <= 0) {
+        alert("Maaf, stok produk ini sudah habis.");
+        return; // stop
+    }
+
+    // cek login
+    if (!token) {
+        alert("Silakan login terlebih dahulu sebelum membeli produk.");
+        return;
+    }
+
+    // kalau sudah login & stok ada
+    window.location.href = `/order/${productId}`;
+};
 // buka modal
 window.openProductModal = function (index) {
     const modal = document.getElementById(`product_modal_${index}`);

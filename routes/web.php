@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
 use App\Http\Controllers\Api\ProductController;
-
+use App\Http\Controllers\Api\OrderController;
 
 
 
@@ -40,3 +40,12 @@ Route::get('/dashboard/stock', function () {
 
 
 
+// render form order button dari homepage saat di click
+Route::get('/order/{productId}', function ($productId) {
+    $product = Product::findOrFail($productId);
+    return view('order', compact('product')); // kirim langsung product
+})->name('order.form');
+
+
+Route::get('/order/{productId}', [OrderController::class, 'create'])->name('order.form'); // untuk render form
+Route::post('/order', [OrderController::class, 'store'])->name('order.store'); // untuk submit order

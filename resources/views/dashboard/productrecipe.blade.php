@@ -8,7 +8,7 @@
         <!-- Tombol Tambah Recipe -->
         <button type="button" id="openrecipemodal" onclick="openRecipeModal()"
             class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white 
-                                                                                                        hover:bg-blue-700 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 mb-5">
+                                                                                                            hover:bg-blue-700 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 mb-5">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                 class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
