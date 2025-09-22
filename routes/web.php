@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Product;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\OrderController;
-
+use App\Http\Controllers\Api\PaymentController;
 
 
 Route::get('/', function () {
@@ -49,3 +49,10 @@ Route::get('/order/{productId}', function ($productId) {
 
 Route::get('/order/{productId}', [OrderController::class, 'create'])->name('order.form'); // untuk render form
 Route::post('/order', [OrderController::class, 'store'])->name('order.store'); // untuk submit order
+
+
+
+
+// Tampilkan halaman pembayaran (Blade)
+Route::get('/payment/{order_id}', [PaymentController::class, 'showPage'])
+    ->name('payment.page');

@@ -109,7 +109,7 @@ function hitungSubtotal() {
 document.addEventListener("DOMContentLoaded", hitungSubtotal);
 
 // ============================
-// Handle Order Submit
+// Handle Order Submit (diperbarui)
 // ============================
 document.addEventListener("DOMContentLoaded", () => {
     const orderForm = document.getElementById("orderForm");
@@ -118,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
     orderForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Ambil user & token dari localStorage
         const userId = localStorage.getItem("user_id");
         const token = localStorage.getItem("access_token");
         if (!userId || !token) {
@@ -126,39 +125,56 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Ambil product_id dari URL: /order/{id}
         const urlParts = window.location.pathname.split("/");
         const productId = urlParts[urlParts.length - 1];
-
         const quantity = parseInt(quantityInput.value) || 1;
 
-        // Alamat
+        // ===== Ambil data nama & no telepon =====
+        const fullName =
+            document.querySelector('input[name="full_name"]')?.value || "";
+        const phoneNumber =
+            document.querySelector('input[name="phone_number"]')?.value || "";
+
+        // ===== Ambil data alamat =====
         const provinsi = provinsiEl?.selectedOptions[0]?.text || "";
         const kota = kotaEl?.selectedOptions[0]?.text || "";
         const kecamatan = kecamatanEl?.selectedOptions[0]?.text || "";
         const kelurahan = kelurahanEl?.selectedOptions[0]?.text || "";
         const kodePos =
             document.querySelector('input[name="kode_pos"]')?.value || "";
-        const shippingAddr = `${kelurahan}, ${kecamatan}, ${kota}, ${provinsi}, ${kodePos}`;
+        const alamatLengkap =
+            document.querySelector('textarea[name="shipping_addr"]')?.value ||
+            "";
 
-        // Total amount
+        // Gabungkan alamat final
+        const shippingAddr = `${alamatLengkap}, ${kelurahan}, ${kecamatan}, ${kota}, ${provinsi}, ${kodePos}`;
+
+        // ===== Hitung total =====
         const hargaProduk = parseInt(hargaProdukEl.dataset.harga) || 0;
         const biayaAdmin = 5000;
         const biayaPengiriman = 20000;
         const totalAmount =
             hargaProduk * quantity + biayaAdmin + biayaPengiriman;
 
-        // FormData
+        // ===== Kirim ke API =====
         const formData = new FormData();
         formData.append("user_id", userId);
         formData.append("product_id", productId);
         formData.append("quantity", quantity);
         formData.append("total_amount", totalAmount);
+        formData.append("full_name", fullName);
+        formData.append("phone_number", phoneNumber);
         formData.append("shipping_addr", shippingAddr);
 
-        const customFile = document.querySelector('input[name="custom_gambar"]')
-            ?.files[0];
-        if (customFile) formData.append("custom_gambar", customFile);
+        // Upload file / canvas
+        if (pinCanvas) {
+            const canvasDataUrl = await exportCanvasWithShape();
+            const canvasFile = dataURLtoFile(
+                canvasDataUrl,
+                "custom_gambar.png"
+            );
+            formData.append("custom_gambar", canvasFile);
+        }
 
         try {
             const res = await fetch("http://127.0.0.1:8000/api/orders", {
@@ -172,8 +188,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await res.json();
             if (res.ok) {
                 alert("Order berhasil dibuat!");
-                orderForm.reset();
-                hitungSubtotal();
+
+                // ✅ Redirect ke halaman payment
+                const orderId = data.order?.order_id;
+                const paymentUrl = data.payment_url || `/payment/${orderId}`;
+                window.location.href = paymentUrl;
             } else {
                 console.error(data);
                 alert(
@@ -185,4 +204,223 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Terjadi error saat mengirim order");
         }
     });
+});
+
+async function exportCanvasWithShape() {
+    if (!pinCanvas) return null;
+    pinCanvas.sendToBack(bgShape);
+    // Render ulang semua objek di canvas
+    pinCanvas.renderAll();
+
+    // Export langsung hasil canvas saat ini
+    return pinCanvas.toDataURL({
+        format: "png",
+        multiplier: 1,
+        enableRetinaScaling: true,
+    });
+}
+
+// ============================
+// Helper: Convert DataURL → File
+// ============================
+function dataURLtoFile(dataurl, filename) {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+}
+
+let pinCanvas = null;
+let bgShape = null; // layer background dalam shape
+
+document.addEventListener("DOMContentLoaded", () => {
+    pinCanvas = new fabric.Canvas("pinCanvas", {
+        backgroundColor: "transparent", // luar shape transparan
+        selection: false,
+    });
+
+    const productType = document.getElementById("productType")?.value;
+    const borderShape = addShapeByProductType(productType);
+
+    // === semua shape (termasuk heart) punya background ===
+    if (borderShape) {
+        bgShape = fabric.util.object.clone(borderShape);
+        bgShape.set({
+            fill: "#fff", // default putih
+            stroke: null,
+            selectable: false,
+            evented: false,
+            absolutePositioned: true,
+        });
+        pinCanvas.add(bgShape);
+        pinCanvas.sendToBack(bgShape);
+    }
+
+    // Tombol background
+    document.getElementById("bgWhite")?.addEventListener("click", () => {
+        if (bgShape) bgShape.set("fill", "#fff");
+        pinCanvas.renderAll();
+    });
+    document.getElementById("bgBlack")?.addEventListener("click", () => {
+        if (bgShape) bgShape.set("fill", "#000");
+        pinCanvas.renderAll();
+    });
+
+    // Upload gambar
+    document.getElementById("uploadImage").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (f) {
+            fabric.Image.fromURL(f.target.result, (img) => {
+                img.scaleToWidth(250);
+                img.scaleToHeight(250);
+                img.set({ left: 25, top: 25 });
+
+                if (borderShape) {
+                    const clip = fabric.util.object.clone(borderShape);
+                    clip.set({
+                        absolutePositioned: true,
+                        evented: false,
+                        fill: null,
+                        stroke: null,
+                    });
+                    img.clipPath = clip;
+                }
+
+                pinCanvas.add(img).setActiveObject(img);
+                pinCanvas.renderAll();
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
+function addShapeByProductType(productType) {
+    let shape;
+    const shapeStyle = {
+        fill: "transparent", // hanya border
+        stroke: "#000",
+        strokeWidth: 2,
+        selectable: false,
+        evented: false,
+        shadow: {
+            color: "rgba(0,0,0,0.2)",
+            blur: 5,
+            offsetX: 2,
+            offsetY: 2,
+        },
+    };
+
+    if (productType === "pin") {
+        shape = new fabric.Circle({
+            ...shapeStyle,
+            radius: 130,
+        });
+    } else if (productType === "heart") {
+        // Heart lebih chubby, bawah tidak terlalu lancip
+        const heartPath = `
+        M 310 470
+        C 250 430, 180 370, 180 280
+        C 180 200, 250 150, 310 200
+        C 370 150, 440 200, 440 280
+        C 440 370, 370 430, 310 470
+        Z
+    `;
+        shape = new fabric.Path(heartPath, {
+            ...shapeStyle,
+            originX: "center",
+            originY: "center",
+            left: pinCanvas.width / 2,
+            top: pinCanvas.height / 2,
+            scaleX: 1,
+            scaleY: 0.8,
+        });
+    } else if (productType === "square") {
+        shape = new fabric.Rect({
+            ...shapeStyle,
+            width: 300,
+            height: 300,
+        });
+    } else if (productType === "sticker") {
+        fabric.Image.fromURL("/images/sticker.png", (img) => {
+            img.set({ left: 0, top: 0, selectable: false });
+            pinCanvas.add(img);
+
+            const border = new fabric.Rect({
+                left: img.left,
+                top: img.top,
+                width: img.width,
+                height: img.height,
+                fill: "transparent",
+                stroke: "#000",
+                strokeWidth: 2,
+                selectable: false,
+                shadow: {
+                    color: "rgba(0,0,0,0.2)",
+                    blur: 5,
+                    offsetX: 2,
+                    offsetY: 2,
+                },
+            });
+
+            pinCanvas.add(border);
+            pinCanvas.sendToBack(border);
+            pinCanvas.sendToBack(img);
+            pinCanvas.renderAll();
+        });
+        return null;
+    }
+
+    if (shape) {
+        pinCanvas.add(shape);
+        pinCanvas.centerObject(shape);
+        pinCanvas.sendToBack(shape);
+        pinCanvas.renderAll();
+        return shape; // border asli
+    }
+
+    return null;
+}
+
+//tampilin ssstock product
+// ============================
+// Tampilkan Stock Product
+// ============================
+document.addEventListener("DOMContentLoaded", async () => {
+    const urlParts = window.location.pathname.split("/");
+    const productId = urlParts[urlParts.length - 1];
+    const stockEl = document.getElementById("stokProduk");
+
+    if (!stockEl) return; // pastikan ada elemen di HTML
+
+    try {
+        const res = await fetch("http://127.0.0.1:8000/api/stocks");
+        const data = await res.json();
+
+        const stockInfo = data.products.find((p) => p.product_id == productId);
+
+        if (stockInfo) {
+            stockEl.textContent =
+                stockInfo.max_production > 0
+                    ? `${stockInfo.max_production} tersedia`
+                    : "Habis";
+            stockEl.className =
+                stockInfo.max_production > 0
+                    ? "text-green-600 font-semibold"
+                    : "text-red-600 font-semibold";
+        } else {
+            stockEl.textContent = "Tidak ada data stok";
+            stockEl.className = "text-gray-500";
+        }
+    } catch (err) {
+        console.error("Gagal load stok:", err);
+        if (stockEl) stockEl.textContent = "Error memuat stok";
+    }
 });

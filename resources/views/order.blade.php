@@ -11,6 +11,7 @@
 
     @include('components.login-modal')
     @include('components.register-modal')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
 </head>
 
 
@@ -79,6 +80,21 @@
                                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                             @endauth
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                            <!-- Nama Lengkap -->
+                            <div>
+                                <label class="label text-xl font-semibold mb-2">Nama Lengkap</label>
+                                <input type="text" name="full_name" placeholder="Masukkan nama lengkap"
+                                    class="input input-bordered w-full" required>
+                            </div>
+
+                            <!-- Nomor Telepon -->
+                            <div>
+                                <label class="label text-xl font-semibold mb-2">Nomor Telepon</label>
+                                <input type="text" name="phone_number" placeholder="Contoh: 08123456789"
+                                    class="input input-bordered w-full" required>
+                            </div>
+
                             <!-- Quantity -->
                             <div>
                                 <label class="label text-xl font-semibold mb-2">Quantity</label>
@@ -128,13 +144,39 @@
                                     <input type="text" name="kode_pos" placeholder="Masukkan kode pos"
                                         class="input input-bordered w-full" required>
                                 </div>
+
+                                <!-- Alamat Lengkap -->
+                                <div>
+                                    <label class="label text-lg font-medium mb-2">Alamat Lengkap</label>
+                                    <textarea name="shipping_addr" rows="3"
+                                        placeholder="Masukkan alamat lengkap (jalan, nomor rumah, RT/RW)"
+                                        class="textarea textarea-bordered w-full" required></textarea>
+                                </div>
                             </div>
 
                             <!-- Custom Gambar -->
+                            <input type="hidden" id="productType" value="{{ $product->product_type }}">
                             <div>
                                 <label class="label text-xl font-semibold mb-2">Custom Gambar</label>
-                                <input type="file" name="custom_gambar" accept=".jpg,.jpeg,.png"
+                                <input type="file" id="uploadImage" name="custom_gambar" accept=".jpg,.jpeg,.png"
                                     class="file-input file-input-bordered w-full">
+                            </div>
+
+                            <!-- Canvas preview -->
+                            <div class="mt-4 flex flex-col items-center gap-4">
+                                <canvas id="pinCanvas" width="300" height="300" class="border"></canvas>
+
+                                <!-- Pilihan background PNG -->
+                                <div class="flex gap-3">
+                                    <button type="button" id="bgWhite"
+                                        class="px-4 py-2 border rounded bg-white text-black shadow">
+                                        Background Putih
+                                    </button>
+                                    <button type="button" id="bgBlack"
+                                        class="px-4 py-2 border rounded bg-black text-white shadow">
+                                        Background Hitam
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Submit Button -->
@@ -159,12 +201,16 @@
                         </div>
                         <div class="flex flex-col w-full">
                             <div class="flex justify-between items-center">
-                                <h2 class="text-lg font-semibold">{{ $product->nama }}</h2>
-                                <p class="text-lg font-bold text-primary" id="hargaProduk"
+                                <h2 class="text-lg font-semibold max-w-[60%]">
+                                    {{ $product->nama }}
+                                </h2>
+                                <p class="text-lg font-bold text-primary whitespace-nowrap" id="hargaProduk"
                                     data-harga="{{ $product->harga }}">
                                     Rp {{ number_format($product->harga, 0, ',', '.') }}
                                 </p>
                             </div>
+                            <!-- Tambahan stok tersedia pakai max_production -->
+                            <p id="stokProduk" class="text-sm text-gray-500">Memuat stok...</p>
                         </div>
                     </div>
 

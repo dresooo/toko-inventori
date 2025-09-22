@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\RawMaterialController;
 use App\Http\Controllers\Api\ProductRecipeController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
 
 // Untuk API Product
 Route::apiResource('products', ProductController::class);
@@ -46,9 +47,17 @@ Route::delete('/product-recipe/{id}', [ProductRecipeController::class, 'destroy'
 Route::delete('/product-recipe/product/{productId}', [ProductRecipeController::class, 'destroyByProduct']);
 
 
+
+//routesa api order
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::put('/orders/{id}', [OrderController::class, 'update']);
 });
+
+
+Route::post('/payments', [PaymentController::class, 'store']);   
+
+// API untuk ambil detail pembayaran (JSON)
+Route::get('/payments/{order_id}', [PaymentController::class, 'show']);

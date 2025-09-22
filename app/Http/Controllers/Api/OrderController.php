@@ -13,60 +13,65 @@ class OrderController extends Controller
     public function store(Request $request)
 {
     $validated = $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'product_id' => 'required|exists:products,product_id',
-        'quantity' => 'required|integer|min:1',
-        'total_amount' => 'required|integer',
+        'user_id'       => 'required|exists:users,id',
+        'product_id'    => 'required|exists:products,product_id',
+        'quantity'      => 'required|integer|min:1',
+        'total_amount'  => 'required|integer',
+        'full_name'     => 'required|string|max:255',  
+        'phone_number'  => 'required|string|max:20',
         'shipping_addr' => 'required|string',
-        'custom_gambar' => 'nullable|file|image|max:2048'
+        'custom_gambar' => 'nullable|file|image|max:2048',
     ]);
 
     try {
-        DB::beginTransaction(); // mulai transaction
+        DB::beginTransaction();
 
-        // ------------------------------
-        // Simpan order dulu
-        // ------------------------------
         $order = Order::create([
-            'user_id' => $validated['user_id'],
-            'product_id' => $validated['product_id'],
-            'quantity' => $validated['quantity'],
-            'total_amount' => $validated['total_amount'],
+            'user_id'       => $validated['user_id'],
+            'product_id'    => $validated['product_id'],
+            'quantity'      => $validated['quantity'],
+            'total_amount'  => $validated['total_amount'],
+            'full_name'     => $validated['full_name'],    
+            'phone_number'  => $validated['phone_number'],
             'shipping_addr' => $validated['shipping_addr'],
         ]);
 
-        // Upload custom gambar jika ada
+        // Upload custom gambar (file upload manual)
         if ($request->hasFile('custom_gambar')) {
             $file = $request->file('custom_gambar');
             $path = $file->store('uploads', 'public');
             $order->custom_gambar = $path;
-            $order->save();
         }
 
-        // ------------------------------
-        // Kurangi stok berdasarkan recipe
-        // ------------------------------
+        // Upload custom canvas (hasil dari toDataURL -> file)
+        if ($request->hasFile('custom_canvas')) {
+            $file = $request->file('custom_canvas');
+            $path = $file->store('uploads/canvas', 'public');
+            $order->custom_canvas = $path;
+        }
+
+        $order->save();
+
+        // Kurangi stok bahan baku
         $this->reduceStockByRecipe($validated['product_id'], $validated['quantity']);
 
-        DB::commit(); // commit transaction
+        DB::commit();
 
-        // ------------------------------
-        // Return response beserta redirect URL payment
-        // ------------------------------
         return response()->json([
-            'success' => true,
-            'order' => $order,
-            'payment_url' => url("/payment/{$order->id}") // ganti sesuai route payment kamu
+            'success'     => true,
+            'order'       => $order,
+            'payment_url' => url("/payment/{$order->order_id}")
         ], 201);
 
     } catch (\Exception $e) {
-        DB::rollBack(); // batal semua jika error
+        DB::rollBack();
         return response()->json([
             'success' => false,
             'message' => $e->getMessage()
         ], 400);
     }
 }
+
 
     // Lihat detail order
     public function show($id)
@@ -111,7 +116,7 @@ private function reduceStockByRecipe($productId, $orderQuantity)
     foreach ($product->recipes as $recipe) {
         $neededQty = $recipe->quantity_needed * $orderQuantity;
         if ($recipe->rawMaterial->stock_quantity < $neededQty) {
-            throw new \Exception("Stok {$recipe->rawMaterial->nama} tidak cukup");
+            throw new \Exception("Stok tidak cukup");
         }
     }
 
@@ -130,4 +135,6 @@ public function create($productId)
     // lempar ke blade (resources/views/order.blade.php)
     return view('order', compact('product'));
 }
+
 }
+
