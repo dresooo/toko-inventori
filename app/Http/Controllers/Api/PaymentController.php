@@ -10,51 +10,56 @@ use App\Models\Payment;
 class PaymentController extends Controller
 {
     // Ambil detail payment berdasarkan order_id
-    public function show($order_id)
-    {
-        $payment = Payment::where('order_id', $order_id)->first();
-        $order   = Order::findOrFail($order_id);
+   public function show($order_id)
+{
+    $payment = Payment::where('order_id', $order_id)->first();
+    $order   = Order::findOrFail($order_id);
 
-        return response()->json([
-            'success' => true,
-            'order'   => $order,
-            'payment' => $payment,
-        ]);
+    // Encode binary ke base64 
+    if ($payment && $payment->payment_proof) {
+        $payment->payment_proof = base64_encode($payment->payment_proof);
     }
 
-    // Simpan payment baru
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'order_id'      => 'required|exists:orders,order_id',
-            'amount'        => 'required|numeric',
-            'payment_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ]);
+    return response()->json([
+        'success' => true,
+        'order'   => $order,
+        'payment' => $payment,
+    ]);
+}
 
-        $order = Order::findOrFail($request->order_id);
+ // Simpan payment baru
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'order_id'      => 'required|exists:orders,order_id',
+        'amount'        => 'required|numeric',
+        'payment_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
 
-        // simpan bukti pembayaran (opsional)
-        $proof = null;
-        if ($request->hasFile('payment_proof')) {
-            $proof = file_get_contents($request->file('payment_proof')->getRealPath());
-        }
+    $data = [
+        'order_id'     => $request->order_id,
+        'amount'       => $request->amount,
+        'payment_date' => now(),          // ✅ wajib diisi
+        'status'       => 'pending',      // ✅ default status
+    ];
 
-        $payment = Payment::create([
-            'order_id'      => $order->order_id,
-            'amount'        => $request->amount,
-            'payment_date'  => now(),
-            'payment_proof' => $proof,
-            'status'        => 'pending',
-        ]);
+    // Jika ada file bukti pembayaran
+    if ($request->hasFile('payment_proof')) {
+        $binary = file_get_contents($request->file('payment_proof')->getRealPath());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment created, waiting for verification.',
-            'payment' => $payment,
-        ]);
- 
- 
+        // Simpan sebagai base64 agar tidak error UTF-8
+        $data['payment_proof'] = base64_encode($binary);
     }
+
+    $payment = Payment::create($data);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Payment created successfully',
+        'payment' => $payment,
+    ], 201);
+}
+
 
     // Tampilkan halaman pembayaran (Blade)
 public function showPage($order_id)
@@ -65,5 +70,31 @@ public function showPage($order_id)
     $payment = Payment::where('order_id', $order_id)->first();
 
     return view('payment', compact('order', 'payment'));
+}
+
+
+public function storeWeb(Request $request)
+{
+    $validated = $request->validate([
+        'order_id' => 'required|exists:orders,order_id',
+        'amount' => 'required|numeric',
+        'payment_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
+
+    $data = [
+        'order_id' => $request->order_id,
+        'amount' => $request->amount,
+        'payment_date' => now(),
+        'status' => 'pending',
+    ];
+
+    if ($request->hasFile('payment_proof')) {
+        $binary = file_get_contents($request->file('payment_proof')->getRealPath());
+        $data['payment_proof'] = base64_encode($binary);
+    }
+
+    Payment::create($data);
+
+    return redirect()->back()->with('payment_success', true);
 }
 }

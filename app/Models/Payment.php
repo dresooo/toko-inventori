@@ -16,6 +16,7 @@ class Payment extends Model
         'status',
     ];
 
+    //ambil data order
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id');

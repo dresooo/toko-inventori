@@ -56,3 +56,5 @@ Route::post('/order', [OrderController::class, 'store'])->name('order.store'); /
 // Tampilkan halaman pembayaran (Blade)
 Route::get('/payment/{order_id}', [PaymentController::class, 'showPage'])
     ->name('payment.page');
+
+Route::post('/payments/web', [PaymentController::class, 'storeWeb'])->name('payments.storeWeb');
