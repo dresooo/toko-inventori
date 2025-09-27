@@ -19,6 +19,7 @@ export default defineConfig({
                 "./dashboard/rawmaterial.js",
                 "./dashboard/productrecipe.js",
                 "./dashboard/stock.js",
+                "./dashboard/orderadmin.js",
             ],
             refresh: true,
         }),

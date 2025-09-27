@@ -54,6 +54,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::put('/orders/{id}', [OrderController::class, 'update']);
+
+    // admin order
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex']);
+    Route::put('/admin/orders/{id}', [OrderController::class, 'adminUpdateStatus']);
+    Route::get('/admin/orders/{id}', [OrderController::class, 'adminShow']); 
 });
 
 
@@ -61,3 +66,9 @@ Route::post('/payments', [PaymentController::class, 'store']);
 
 // API untuk ambil detail pembayaran (JSON)
 Route::get('/payments/{order_id}', [PaymentController::class, 'show']);
+
+
+// routes/api.php
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return response()->json($request->user());
+});

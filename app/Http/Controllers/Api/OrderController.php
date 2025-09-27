@@ -136,5 +136,84 @@ public function create($productId)
     return view('order', compact('product'));
 }
 
+
+
+// List semua order untuk admin
+// List semua order untuk admin
+public function adminIndex()
+{
+    // Pilih kolom yang aman untuk JSON (exclude BLOB)
+    $orders = Order::with([
+        'user:id,name,email',
+        'product:product_id,nama,harga'
+    ])
+        ->select([
+            'order_id',
+            'user_id',
+            'full_name',
+            'phone_number',
+            'product_id',
+            'quantity',
+            'total_amount',
+            'order_date',
+            'status',
+            'shipping_addr',
+            'created_at',
+            'updated_at'
+        ])
+        ->get();
+
+    return response()->json($orders, 200, [], JSON_UNESCAPED_UNICODE);
 }
 
+
+// Update status order khusus admin
+public function adminUpdateStatus(Request $request, $id)
+{
+    $order = Order::findOrFail($id);
+
+    $request->validate([
+        // Sesuaikan validasi dengan ENUM di DB
+        'status' => 'required|in:paid,processing,shipped,cancelled',
+    ]);
+
+    $order->status = $request->status;
+    $order->save();
+
+    return response()->json([
+        'message' => 'Status order berhasil diperbarui oleh admin',
+        'order'   => $order,
+    ]);
+}
+
+public function adminShow($id)
+{
+    $order = Order::with([
+        'user:id,name,email',
+        'product:product_id,nama,harga'
+    ])
+    ->select([
+        'order_id',
+        'user_id',
+        'full_name',
+        'phone_number',
+        'product_id',
+        'quantity',
+        'total_amount',
+        'order_date',
+        'status',
+        'shipping_addr',
+        'created_at',
+        'updated_at'
+    ])
+    ->findOrFail($id);
+
+    // Pastikan string valid UTF-8
+    $order->full_name = mb_convert_encoding($order->full_name, 'UTF-8', 'UTF-8');
+    $order->shipping_addr = mb_convert_encoding($order->shipping_addr, 'UTF-8', 'UTF-8');
+
+    return response()->json($order, 200, [], JSON_UNESCAPED_UNICODE);
+}
+
+
+}

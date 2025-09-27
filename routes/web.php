@@ -38,7 +38,10 @@ Route::get('/dashboard/stock', function () {
     return view('dashboard.stock');
 })->name('dashboard.stock');
 
-
+// web.php untuk order admin
+Route::get('/dashboard/orderadmin', function () {
+    return view('dashboard.orderadmin');
+})->name('dashboard.orderadmin');
 
 // render form order button dari homepage saat di click
 Route::get('/order/{productId}', function ($productId) {
