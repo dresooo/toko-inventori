@@ -34,6 +34,7 @@ class OrderController extends Controller
             'full_name'     => $validated['full_name'],    
             'phone_number'  => $validated['phone_number'],
             'shipping_addr' => $validated['shipping_addr'],
+            'status'        => 'awaiting_payment',
         ]);
 
         // Upload custom gambar (file upload manual)
@@ -215,5 +216,57 @@ public function adminShow($id)
     return response()->json($order, 200, [], JSON_UNESCAPED_UNICODE);
 }
 
+
+
+// === Update status order + payment dari sisi admin ===
+public function adminUpdateOrderPaymentStatus(Request $request, $id)
+{
+    $request->validate([
+        'action' => 'required|in:verified,rejected,shipped'
+    ]);
+
+    $order = Order::with('payment')->findOrFail($id);
+
+    // cek apakah order punya payment
+    if (!$order->payment) {
+        return response()->json([
+            'message' => 'Payment record not found for this order'
+        ], 400);
+    }
+
+    switch ($request->action) {
+        case 'verified':
+            if ($order->status === 'processing' && $order->payment->status === 'pending') {
+                $order->status = 'paid';
+                $order->payment->status = 'verified';
+            }
+            break;
+
+        case 'rejected':
+            if ($order->status === 'processing' && $order->payment->status === 'pending') {
+                $order->status = 'cancelled';
+                $order->payment->status = 'rejected';
+            }
+            break;
+
+        case 'shipped':
+            if ($order->status === 'paid') {
+                $order->status = 'shipped';
+            }
+            break;
+    }
+
+    // simpan perubahan
+    $order->save();
+    $order->payment->save();
+
+    // refresh data agar yang dikirim ke response paling baru
+    $order->refresh()->load('payment');
+
+    return response()->json([
+        'message' => 'Status berhasil diperbarui',
+        'order'   => $order
+    ]);
+}
 
 }

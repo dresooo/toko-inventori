@@ -37,4 +37,9 @@ class Order extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
+    // Relasi ke Payment (1 order punya 1 payment)
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'order_id', 'order_id');
+    }
 }

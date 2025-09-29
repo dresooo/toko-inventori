@@ -39,10 +39,8 @@
                 <div>
                     <label class="block mb-1 font-medium">Status *</label>
                     <select id="editOrderStatus" name="status" class="select select-bordered w-full" required>
-                        <option value="pending">Pending</option>
-                        <option value="processing">Diproses</option>
-                        <option value="completed">Selesai</option>
-                        <option value="cancelled">Dibatalkan</option>
+                        <option value="verified">Approve</option>
+                        <option value="rejected">Reject</option>
                     </select>
                 </div>
 
@@ -61,6 +59,7 @@
             <button>close</button>
         </form>
     </dialog>
+
 
 
     <!-- Modal Detail Order -->

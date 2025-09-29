@@ -72,3 +72,8 @@ Route::get('/payments/{order_id}', [PaymentController::class, 'show']);
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return response()->json($request->user());
 });
+
+
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    Route::put('/orders/{id}/status', [OrderController::class, 'adminUpdateOrderPaymentStatus']);
+});
