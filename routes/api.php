@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\RawMaterialController;
 use App\Http\Controllers\Api\ProductRecipeController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PaymentController;
-
+use App\Http\Controllers\AdminNotificationController;
 // Untuk API Product
 Route::apiResource('products', ProductController::class);
 // Edit / Update product
@@ -76,4 +76,17 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
 
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/orders/{id}/status', [OrderController::class, 'adminUpdateOrderPaymentStatus']);
+});
+
+
+//Notification
+
+
+
+// Notifications (khusus admin)
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    Route::get('/notifications', [AdminNotificationController::class, 'index']);
+    Route::post('/notifications', [AdminNotificationController::class, 'store']);
+    Route::put('/notifications/{id}/read', [AdminNotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy']);
 });

@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Payment;
-
+use App\Models\Notification;
+use App\Models\User;
 class PaymentController extends Controller
 {
     // Ambil detail payment berdasarkan order_id
@@ -94,11 +95,25 @@ class PaymentController extends Controller
         }
 
         Payment::create($data);
-
+        
         // ✅ Update status order jadi 'processing'
         $order = Order::find($request->order_id);
         $order->status = 'processing';
         $order->save();
+        
+
+
+        // ✅ Buat notifikasi untuk semua admin
+        $admins = User::where('user_type', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'user_id'    => $admin->id, // user admin
+                'type'       => 'payment',
+                'message'    => "Pembayaran untuk order #{$order->order_id} berhasil, status order sekarang 'processing'.",
+                'is_read'    => 0,
+                'created_at' => now(),
+            ]);
+        }
 
         return redirect()->back()->with('payment_success', true);
     }

@@ -165,6 +165,7 @@ async function handleEditSubmit(e) {
 }
 
 // Detail modal
+// Detail modal
 window.openDetailModal = function (orderId) {
     const order = window.orderData.find((o) => o.order_id === orderId);
 
@@ -189,9 +190,156 @@ window.openDetailModal = function (orderId) {
     document.getElementById("detailAddress").innerText = order.shipping_addr;
     document.getElementById("detailEmail").innerText = order.user?.email || "-";
 
+    // ===========================
+    // Custom Gambar (upload user)
+    // ===========================
+    console.log("🎨 Custom gambar dari order:", order.custom_gambar);
+    const imgEl = document.getElementById("detailProductImage");
+    const downloadCustomBtn = document.getElementById("downloadCustomImageBtn");
+
+    if (order.custom_gambar) {
+        let customPath = order.custom_gambar;
+
+        // Bersihkan path
+        customPath = customPath.replace(/^(storage\/|public\/)/g, "");
+        if (!customPath.startsWith("uploads/")) {
+            customPath = "uploads/" + customPath;
+        }
+
+        const customImageUrl = `/storage/${customPath}`;
+        imgEl.src = customImageUrl;
+
+        console.log("✅ Custom image path:", customImageUrl);
+
+        if (downloadCustomBtn) {
+            downloadCustomBtn.classList.remove("hidden");
+            downloadCustomBtn.onclick = () => {
+                const link = document.createElement("a");
+                link.href = customImageUrl;
+                link.download = `custom_design_order_${order.order_id}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+        }
+
+        imgEl.onerror = function () {
+            console.warn("⚠️ Custom image tidak ditemukan:", this.src);
+            if (this.src.includes("/storage/")) {
+                const altPath = this.src.replace("/storage/", "/");
+                this.onerror = () => {
+                    console.error("❌ Custom image gagal dimuat");
+                    this.onerror = null;
+                    this.src = "/no-image.png";
+                };
+                this.src = altPath;
+            } else {
+                this.onerror = null;
+                this.src = "/no-image.png";
+            }
+        };
+    } else {
+        imgEl.src = "https://via.placeholder.com/150?text=No+Custom+Image";
+        if (downloadCustomBtn) {
+            downloadCustomBtn.classList.add("hidden");
+        }
+        console.log("ℹ️ Tidak ada custom gambar");
+    }
+
+    const paymentProofContainer = document.getElementById(
+        "paymentProofContainer"
+    );
+    const paymentProofImg = document.getElementById("detailPaymentProof");
+    const downloadPaymentProofBtn = document.getElementById(
+        "downloadPaymentProofBtn"
+    );
+
+    // Cek apakah payment ada dan ada payment_proof
+    if (order.payment && order.payment.payment_proof) {
+        const proofBase64 = order.payment.payment_proof;
+
+        // Tentukan MIME type (biasanya PNG, bisa dicek jika JPEG)
+        let mimeType = "image/png";
+        if (proofBase64.startsWith("/9j/")) {
+            mimeType = "image/jpeg";
+        }
+
+        const paymentProofUrl = `data:${mimeType};base64,${proofBase64}`;
+
+        paymentProofImg.src = paymentProofUrl;
+        paymentProofContainer.classList.remove("hidden");
+
+        downloadPaymentProofBtn.classList.remove("hidden");
+        downloadPaymentProofBtn.onclick = () => {
+            const link = document.createElement("a");
+            link.href = paymentProofUrl;
+            link.download = `payment_proof_order_${order.order_id}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+    } else {
+        paymentProofContainer.classList.add("hidden");
+        downloadPaymentProofBtn.classList.add("hidden");
+        console.log("ℹ️ Tidak ada bukti pembayaran");
+    }
+
+    // ===========================
+    // Tombol Download SKU
+    // ===========================
+    document.getElementById("downloadSkuBtn").onclick = () =>
+        downloadSku(order);
+
     document.getElementById("orderDetailModal").classList.remove("hidden");
 };
 
 window.closeDetailModal = function () {
     document.getElementById("orderDetailModal").classList.add("hidden");
 };
+
+async function downloadSku(order) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Judul
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("DETAIL ORDER", 105, 20, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+
+    // Info order
+    let y = 40;
+    const lineHeight = 8;
+
+    doc.text(`Order ID   : ${order.order_id}`, 20, y);
+    y += lineHeight;
+    doc.text(`Nama       : ${order.full_name}`, 20, y);
+    y += lineHeight;
+    doc.text(`No. Telp   : ${order.phone_number}`, 20, y);
+    y += lineHeight;
+    doc.text(`Email        : ${order.user?.email || "-"}`, 20, y);
+    y += lineHeight;
+    doc.text("Alamat     :", 20, y);
+    y += lineHeight;
+
+    // Biar alamat panjang otomatis wrap
+    let splitAddress = doc.splitTextToSize(order.shipping_addr || "-", 170);
+    doc.text(splitAddress, 20, y);
+    y += splitAddress.length * lineHeight;
+
+    y += 6;
+    doc.setFont("helvetica", "bold");
+    doc.text("=== PRODUK ===", 20, y);
+    doc.setFont("helvetica", "normal");
+    y += lineHeight;
+
+    doc.text(`Nama Produk: ${order.product ? order.product.nama : "-"}`, 20, y);
+    y += lineHeight;
+    doc.text(`Jumlah     : ${order.quantity}`, 20, y);
+    y += lineHeight;
+    y += lineHeight;
+    // Simpan PDF
+    doc.save(`SKU-${order.order_id}.pdf`);
+}

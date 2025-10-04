@@ -146,7 +146,8 @@ public function adminIndex()
     // Pilih kolom yang aman untuk JSON (exclude BLOB)
     $orders = Order::with([
         'user:id,name,email',
-        'product:product_id,nama,harga'
+        'product:product_id,nama,harga',
+        'payment:payment_id,order_id,payment_proof,status,payment_date' // 
     ])
         ->select([
             'order_id',
@@ -159,6 +160,7 @@ public function adminIndex()
             'order_date',
             'status',
             'shipping_addr',
+            'custom_gambar',  
             'created_at',
             'updated_at'
         ])
@@ -191,7 +193,8 @@ public function adminShow($id)
 {
     $order = Order::with([
         'user:id,name,email',
-        'product:product_id,nama,harga'
+        'product:product_id,nama,harga',
+        'payment:payment_id,order_id,payment_proof,status,payment_date' 
     ])
     ->select([
         'order_id',
@@ -204,6 +207,7 @@ public function adminShow($id)
         'order_date',
         'status',
         'shipping_addr',
+        'custom_gambar', 
         'created_at',
         'updated_at'
     ])
@@ -215,6 +219,7 @@ public function adminShow($id)
 
     return response()->json($order, 200, [], JSON_UNESCAPED_UNICODE);
 }
+
 
 
 
