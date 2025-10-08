@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\RawMaterialController;
 use App\Http\Controllers\Api\ProductRecipeController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PaymentController;
-use App\Http\Controllers\AdminNotificationController;
+use App\Http\Controllers\Api\AdminNotificationController;
 // Untuk API Product
 Route::apiResource('products', ProductController::class);
 // Edit / Update product
@@ -88,5 +88,6 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/notifications', [AdminNotificationController::class, 'index']);
     Route::post('/notifications', [AdminNotificationController::class, 'store']);
     Route::put('/notifications/{id}/read', [AdminNotificationController::class, 'markAsRead']);
+    Route::put('/notifications/mark-all-read', [AdminNotificationController::class, 'markAllRead']); //
     Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy']);
 });

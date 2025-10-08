@@ -43,6 +43,14 @@ Route::get('/dashboard/orderadmin', function () {
     return view('dashboard.orderadmin');
 })->name('dashboard.orderadmin');
 
+// web.php untuk notification
+Route::get('/dashboard/notification', function () {
+    return view('dashboard.notification');
+})->name('dashboard.notification');
+
+
+
+
 // render form order button dari homepage saat di click
 Route::get('/order/{productId}', function ($productId) {
     $product = Product::findOrFail($productId);

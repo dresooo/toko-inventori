@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Notification;
 use App\Models\User;
-
+use Illuminate\Support\Facades\DB;
 class AdminNotificationController extends Controller
 {
     /**
@@ -83,4 +84,19 @@ class AdminNotificationController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Notifikasi dikirim ke semua admin']);
     }
+ public function markAllRead(Request $request)
+    {
+        DB::table('notifications')
+            ->where('user_id', $request->user()->id)
+            ->where('is_read', 0)
+            ->update(['is_read' => 1]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Semua notifikasi telah ditandai sebagai dibaca'
+        ]);
+    }
+    
 }
+
+

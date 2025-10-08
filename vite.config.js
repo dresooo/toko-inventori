@@ -20,6 +20,7 @@ export default defineConfig({
                 "./dashboard/productrecipe.js",
                 "./dashboard/stock.js",
                 "./dashboard/orderadmin.js",
+                "./dashboard/notification.js",
             ],
             refresh: true,
         }),

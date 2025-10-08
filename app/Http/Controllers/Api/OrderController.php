@@ -274,4 +274,32 @@ public function adminUpdateOrderPaymentStatus(Request $request, $id)
     ]);
 }
 
+
+// === Get order history by user ===
+public function getUserOrderHistory($userId)
+{
+    $orders = Order::with(['product:product_id,nama,harga'])
+        ->where('user_id', $userId)
+        ->orderBy('created_at', 'desc')
+        ->get([
+            'order_id',
+            'product_id',
+            'quantity',
+            'total_amount',
+            'status',
+            'created_at'
+        ]);
+
+    if ($orders->isEmpty()) {
+        return response()->json([
+            'message' => 'Belum ada riwayat order',
+            'data' => []
+        ], 200);
+    }
+
+    return response()->json([
+        'message' => 'Riwayat order ditemukan',
+        'data' => $orders
+    ], 200);
+}
 }
