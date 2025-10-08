@@ -144,7 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-b-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 `;
 
-                // klik → ke halaman detail order history
+                // klik → ke halaman detail
+                // klik → ke halaman detail riwayat order
                 item.addEventListener("click", () => {
                     window.location.href = `/orderhistory/${order.order_id}`;
                 });

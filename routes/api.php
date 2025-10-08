@@ -78,9 +78,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/orders/{id}/status', [OrderController::class, 'adminUpdateOrderPaymentStatus']);
 });
 
-
-//Notification
-
+//untuk history Pembelian
+Route::get('/orders/history/{userId}', [OrderController::class, 'getUserOrderHistory']);
 
 
 // Notifications (khusus admin)
@@ -91,3 +90,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/notifications/mark-all-read', [AdminNotificationController::class, 'markAllRead']); //
     Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy']);
 });
+
+
+// API endpoint
+Route::get('/api/orders/{order_id}', [OrderController::class, 'getOrderDetail']);

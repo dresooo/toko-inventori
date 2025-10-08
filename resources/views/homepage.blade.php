@@ -45,14 +45,13 @@
                             <span class="badge badge-sm indicator-item">3</span>
                         </div>
                     </div>
-                    <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-52 shadow">
+                    <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-100 shadow">
                         <div class="card-body">
-                            <span class="text-lg font-bold">3 Notifications</span>
-                            <span class="text-info">You have new alerts</span>
+                            <span class="text-lg font-bold">Order History</span>
+                            <div id="orderHistoryList" class="mt-2 space-y-2"></div>
                             <div class="card-actions">
-                                <button class="btn btn-primary btn-block">View all</button>
+                                <button id="showAllOrdersBtn" class="btn btn-primary btn-block">Show All</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -72,7 +71,7 @@
 
         <x-card-display />
         <x-show-product />
-    
+
 
         {{-- fOOTER --}}
         <footer class="footer sm:footer-horizontal bg-neutral text-neutral-content p-10">
@@ -108,7 +107,7 @@
         'resources/js/register.js',
         'resources/js/profil.js',
         'resources/js/logout.js',
-
+        'resources/js/orderhistory.js',
     ])
 
 </html>

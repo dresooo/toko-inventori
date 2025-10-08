@@ -268,7 +268,8 @@
         'resources/js/register.js',
         'resources/js/profil.js',
         'resources/js/logout.js',
-        'resources/js/order.js'
+        'resources/js/order.js',
+        'resources/js/orderhistory.js',
 
     ])
 

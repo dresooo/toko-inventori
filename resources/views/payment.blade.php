@@ -297,6 +297,7 @@
         'resources/js/profil.js',
         'resources/js/logout.js',
         'resources/js/payment.js',
+        'resources/js/orderhistory.js',
     ])
 
 </html>
