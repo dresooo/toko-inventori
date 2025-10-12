@@ -70,8 +70,8 @@ Route::get('/payment/{order_id}', [PaymentController::class, 'showPage'])
 
 Route::post('/payments/web', [PaymentController::class, 'storeWeb'])->name('payments.storeWeb');
 
-//order history
+//order histor
 // halaman order history detail (frontend view)
-Route::get('/orderhistory/{orderId}', function ($orderId) {
-    return view('orderhistory', ['orderId' => $orderId]);
+Route::get('/orderhistory/{orderId}', function () {
+    return view('orderhistory');
 });

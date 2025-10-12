@@ -57,17 +57,26 @@ function updateNavbar() {
     const userName = localStorage.getItem("user_name");
     const btnLogin = document.getElementById("openLoginModal");
     const navbarUser = document.getElementById("navbarUser");
+    const notifBtn = document.getElementById("notifBtn"); // tombol notifikasi
 
     if (userName) {
         // Tampilkan nama user
-        navbarUser.innerText = `${userName} `;
-        navbarUser.style.display = "inline-block";
+        if (navbarUser) {
+            navbarUser.innerText = `${userName} `;
+            navbarUser.style.display = "inline-block";
+        }
 
         // Sembunyikan tombol login
         if (btnLogin) btnLogin.style.display = "none";
+
+        // Tampilkan tombol notifikasi
+        if (notifBtn) notifBtn.style.display = "inline-block";
     } else {
         // Jika belum login, tampilkan tombol login
-        navbarUser.style.display = "none";
+        if (navbarUser) navbarUser.style.display = "none";
         if (btnLogin) btnLogin.style.display = "inline-block";
+
+        // Sembunyikan tombol notifikasi
+        if (notifBtn) notifBtn.style.display = "none";
     }
 }

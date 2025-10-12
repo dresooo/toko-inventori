@@ -92,5 +92,5 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 });
 
 
-// API endpoint
-Route::get('/api/orders/{order_id}', [OrderController::class, 'getOrderDetail']);
+
+Route::get('/orders/detail/{orderId}', [OrderController::class, 'showDetailHistoryOrder']);

@@ -16,6 +16,7 @@ export default defineConfig({
                 "./productstock.js",
                 "./payment.js",
                 "./orderhistory.js",
+                "./orderhistorydetail.js",
                 "./dashboard/productadmin.js",
                 "./dashboard/rawmaterial.js",
                 "./dashboard/productrecipe.js",

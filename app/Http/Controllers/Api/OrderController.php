@@ -302,4 +302,56 @@ public function getUserOrderHistory($userId)
         'data' => $orders
     ], 200);
 }
+
+
+
+// === Get detail riwayat order by order_id ===
+public function showDetailHistoryOrder($orderId)
+{
+    $order = Order::with([
+        'user:id,name,email',
+        'product:product_id,nama,harga,deskripsi,gambar', // Load gambar
+        'payment:payment_id,order_id,payment_proof,status,payment_date'
+    ])
+    ->select([
+        'order_id',
+        'user_id',
+        'full_name',
+        'phone_number',
+        'product_id',
+        'quantity',
+        'total_amount',
+        'order_date',
+        'status',
+        'shipping_addr',
+        'custom_gambar',
+        'created_at',
+        'updated_at'
+    ])
+    ->find($orderId);
+
+    if (!$order) {
+        return response()->json([
+            'message' => 'Data order tidak ditemukan',
+            'data' => null
+        ], 404);
+    }
+
+    // Encoding teks aman
+    $order->full_name = mb_convert_encoding($order->full_name, 'UTF-8', 'UTF-8');
+    $order->shipping_addr = mb_convert_encoding($order->shipping_addr, 'UTF-8', 'UTF-8');
+
+    //  Convert binary gambar product ke base64
+    if ($order->product && $order->product->gambar) {
+        $order->product->gambar_base64 = base64_encode($order->product->gambar);
+        unset($order->product->gambar); // Hapus binary untuk avoid JSON error
+    }
+
+
+    return response()->json([
+        'message' => 'Detail order ditemukan',
+        'data' => $order
+    ], 200, [], JSON_UNESCAPED_UNICODE);
+}
+
 }

@@ -23,7 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("user_name");
-
+                localStorage.removeItem("user_id");
+                localStorage.removeItem("user_type");
                 alert("Logout berhasil");
                 window.location.href = "/homepage";
             } else {

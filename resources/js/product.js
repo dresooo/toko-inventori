@@ -162,9 +162,14 @@ window.handleBuyNow = function (productId, stock) {
         return; // stop
     }
 
-    // cek login
+    // Cek login
     if (!token) {
-        alert("Silakan login terlebih dahulu sebelum membeli produk.");
+        const loginModal = document.getElementById("login_modal");
+        if (loginModal) {
+            loginModal.showModal(); // 🟢 langsung munculkan modal login
+        } else {
+            alert("Silakan login terlebih dahulu sebelum membeli produk.");
+        }
         return;
     }
 

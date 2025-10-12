@@ -1,185 +1,171 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const userId = localStorage.getItem("user_id");
-    const orderHistoryList = document.getElementById("orderHistoryList");
-    const showAllBtn = document.getElementById("showAllOrdersBtn");
-
-    // 🟩 Fungsi terjemahkan status
-    function translateStatus(status) {
-        const map = {
-            awaiting_payment: "Menunggu Pembayaran",
-            pending: "Menunggu Konfirmasi",
-            paid: "Sudah Dibayar",
-            processing: "Sedang Diproses",
-            shipped: "Sedang Dikirim",
-            delivered: "Sudah Diterima",
-            cancelled: "Dibatalkan",
-            verified: "Terverifikasi",
-            rejected: "Ditolak",
-        };
-        return map[status] || status;
-    }
-
-    // 🟦 Fungsi untuk memberi warna badge status dengan style lebih modern
-    function getStatusBadge(status) {
-        const badgeStyles = {
-            awaiting_payment:
-                "bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-sm",
-            pending:
-                "bg-gradient-to-r from-amber-400 to-yellow-500 text-white shadow-sm",
-            paid: "bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-sm",
-            processing:
-                "bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-sm",
-            shipped:
-                "bg-gradient-to-r from-indigo-400 to-purple-500 text-white shadow-sm",
-            delivered:
-                "bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-sm",
-            cancelled:
-                "bg-gradient-to-r from-red-400 to-rose-500 text-white shadow-sm",
-            verified:
-                "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-sm",
-            rejected:
-                "bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-sm",
-        };
-        return (
-            badgeStyles[status] ||
-            "bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-sm"
-        );
-    }
-
-    // 🎨 Icon untuk setiap status
-    function getStatusIcon(status) {
-        const icons = {
-            awaiting_payment: "⏳",
-            pending: "⏰",
-            paid: "✅",
-            processing: "⚙️",
-            shipped: "🚚",
-            delivered: "📦",
-            cancelled: "❌",
-            verified: "✓",
-            rejected: "⛔",
-        };
-        return icons[status] || "📋";
-    }
-
-    async function loadOrderHistory(limit = 3) {
-        try {
-            const res = await fetch(`/api/orders/history/${userId}`, {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${localStorage.getItem(
-                        "access_token"
-                    )}`,
-                },
-            });
-
-            const data = await res.json();
-            orderHistoryList.innerHTML = "";
-
-            if (!data.data || data.data.length === 0) {
-                orderHistoryList.innerHTML = `
-                    <div class="text-center py-8">
-                        <div class="text-6xl mb-3">📭</div>
-                        <p class='text-gray-400 text-sm'>Belum ada riwayat order</p>
-                    </div>
-                `;
-                showAllBtn.style.display = "none";
-                return;
-            }
-
-            const limitedOrders = data.data.slice(0, limit);
-            limitedOrders.forEach((order) => {
-                const translated = translateStatus(order.status);
-                const badgeClass = getStatusBadge(order.status);
-                const icon = getStatusIcon(order.status);
-
-                const item = document.createElement("div");
-                item.className =
-                    "group relative p-4 rounded-xl hover:shadow-lg cursor-pointer border border-gray-200 mb-3 transition-all duration-300 hover:border-blue-300 hover:-translate-y-0.5 bg-white";
-
-                item.innerHTML = `
-                    <div class="flex items-start gap-3">
-                        <!-- Icon Container -->
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-                            ${icon}
-                        </div>
-                        
-                        <!-- Content -->
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-800 mb-2 truncate group-hover:text-blue-600 transition-colors">
-                                ${order.product.nama}
-                            </p>
-                            
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="text-xs font-semibold ${badgeClass} px-3 py-1 rounded-full">
-                                    ${translated}
-                                </span>
-                            </div>
-                            
-                            <div class="flex items-center gap-1 text-xs text-gray-400">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span>${new Date(
-                                    order.created_at
-                                ).toLocaleString("id-ID", {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                })}</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Arrow indicator -->
-                        <div class="flex-shrink-0 text-gray-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    
-                    <!-- Subtle bottom border accent -->
-                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-b-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                `;
-
-                // klik → ke halaman detail order history
-                item.addEventListener("click", () => {
-                    window.location.href = `/orderhistory/${order.order_id}`;
-                });
-
-                orderHistoryList.appendChild(item);
-            });
-
-            // tampilkan tombol "Show All" hanya jika lebih dari 3
-            showAllBtn.style.display = data.data.length > 3 ? "block" : "none";
-        } catch (err) {
-            console.error("Error saat memuat riwayat order:", err);
-            orderHistoryList.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="text-6xl mb-3">⚠️</div>
-                    <p class='text-gray-400 text-sm'>Gagal memuat riwayat order</p>
-                </div>
-            `;
-        }
-    }
-
-    let isShowingAll = false;
-
-    // initial load (3 terakhir)
-    loadOrderHistory(3);
-
-    // event toggle tampilkan semua / show less
-    showAllBtn.addEventListener("click", () => {
-        if (isShowingAll) {
-            loadOrderHistory(3);
-            showAllBtn.textContent = "Tampilkan Semua";
-            isShowingAll = false;
-        } else {
-            loadOrderHistory(100);
-            showAllBtn.textContent = "Tampilkan Lebih Sedikit";
-            isShowingAll = true;
-        }
-    });
+document.addEventListener("DOMContentLoaded", async () => {
+    // 🔹 Saat pertama kali load, ambil notifikasi baru
+    fetchNotifications(false);
 });
+
+// 🔹 Tandai semua notifikasi sebagai sudah dibaca
+async function markAllAsRead() {
+    try {
+        const res = await fetch("/api/admin/notifications/mark-all-read", {
+            method: "PUT",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        });
+        if (!res.ok)
+            console.warn("Gagal menandai semua notifikasi sebagai dibaca");
+    } catch (err) {
+        console.error("Error markAllAsRead:", err);
+    }
+}
+
+// 🔹 Ambil notifikasi
+async function fetchNotifications(showAll = false) {
+    try {
+        const res = await fetch("/api/admin/notifications", {
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            renderError(errorData.message || "Gagal mengambil notifikasi");
+            return;
+        }
+
+        const notifications = await res.json();
+        if (!Array.isArray(notifications)) {
+            renderError("Format data tidak valid");
+            return;
+        }
+
+        // 🔹 Tampilkan dulu notifikasi baru
+        renderNotifications(notifications, showAll);
+
+        // 🔹 Setelah tampil (dan hanya kalau bukan showAll), tandai sebagai read
+        if (!showAll) {
+            await markAllAsRead();
+        }
+    } catch (err) {
+        console.error("Gagal ambil notifikasi:", err);
+        renderError("Terjadi kesalahan saat mengambil notifikasi");
+    }
+}
+
+// 🔹 Tampilkan pesan error
+function renderError(message) {
+    const container = document.querySelector("#notification-list");
+    if (container) {
+        container.innerHTML = `
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                <p class="text-red-600 font-semibold">${message}</p>
+            </div>
+        `;
+    }
+}
+
+// 🔹 Render notifikasi ke halaman
+function renderNotifications(data, showAll = false) {
+    const container = document.querySelector("#notification-list");
+    if (!container) {
+        console.error("Element #notification-list tidak ditemukan");
+        return;
+    }
+
+    container.innerHTML = "";
+
+    if (data.length === 0) {
+        container.innerHTML = `<p class="text-gray-500 text-center">Tidak ada notifikasi baru.</p>`;
+        return;
+    }
+
+    // Urutkan berdasarkan tanggal terbaru
+    const sortedData = data.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+
+    // Pisahkan notifikasi baru & lama
+    const newNotifs = sortedData.filter((n) => n.is_read === 0);
+    const oldNotifs = sortedData.filter((n) => n.is_read === 1);
+
+    // Jika tidak showAll, tampilkan hanya notifikasi baru
+    const visibleNotifs = showAll ? sortedData : newNotifs;
+
+    // Kalau kosong dan bukan showAll
+    if (visibleNotifs.length === 0 && !showAll) {
+        container.innerHTML = `<p class="text-gray-500 text-center">Tidak ada notifikasi baru.</p>`;
+    }
+
+    visibleNotifs.forEach((n) => {
+        const card = document.createElement("div");
+        card.className =
+            "flex items-center justify-between bg-white shadow-sm rounded-2xl p-4 mb-3 border border-gray-200 hover:shadow-md transition-all duration-200";
+
+        card.innerHTML = `
+            <div class="flex flex-col">
+                <p class="font-medium text-gray-800">${n.message}</p>
+                <p class="text-xs text-gray-500 mt-1">${new Date(
+                    n.created_at
+                ).toLocaleString()}</p>
+            </div>
+            <div class="flex gap-2">
+                <button 
+                    onclick="deleteNotification(${n.notification_id})"
+                    class="bg-red-500 hover:bg-red-600 text-white text-xs font-medium px-2.5 py-1 rounded-lg transition-all duration-150 active:scale-95 shadow-sm">
+                    Hapus
+                </button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    // 🔹 Tombol tampilkan riwayat lama
+    if (!showAll && oldNotifs.length > 0) {
+        const showAllBtn = document.createElement("button");
+        showAllBtn.textContent = "Tampilkan Semua Riwayat";
+        showAllBtn.className =
+            "mt-3 text-sm font-medium text-blue-600 hover:underline text-center w-full";
+        showAllBtn.onclick = () => fetchNotifications(true);
+        container.appendChild(showAllBtn);
+    }
+
+    // 🔹 Tombol kembali ke notifikasi baru
+    if (showAll) {
+        const backBtn = document.createElement("button");
+        backBtn.textContent = "Kembali ke Notifikasi Baru";
+        backBtn.className =
+            "mt-3 text-sm font-medium text-gray-600 hover:underline text-center w-full";
+        backBtn.onclick = () => fetchNotifications(false);
+        container.appendChild(backBtn);
+    }
+}
+
+// 🔹 Hapus notifikasi
+window.deleteNotification = async function (id) {
+    if (!confirm("Yakin hapus notifikasi ini?")) return;
+    try {
+        const res = await fetch(`/api/admin/notifications/${id}`, {
+            method: "DELETE",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            alert(
+                "Gagal menghapus notifikasi: " + (errorData.message || "Error")
+            );
+            return;
+        }
+
+        fetchNotifications(false);
+    } catch (err) {
+        console.error("Error deleteNotification:", err);
+        alert("Terjadi kesalahan");
+    }
+};
