@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -34,32 +35,6 @@
                 <a href="{{ url('/homepage') }}" class="btn btn-ghost text-4xl p-8">VYNTER&LUNE</a>
             </div>
             <div class="flex-none flex items-center gap-4">
-                <!-- Notifikasi -->
-                <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-                        <div class="indicator">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 
-                 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 
-                 6.165 6 8.388 6 11v3.159c0 .538-.214 
-                 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 
-                 11-6 0v-1m6 0H9" />
-                            </svg>
-                            <span class="badge badge-sm indicator-item">3</span>
-                        </div>
-                    </div>
-                    <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-52 shadow">
-                        <div class="card-body">
-                            <span class="text-lg font-bold">3 Notifications</span>
-                            <span class="text-info">You have new alerts</span>
-                            <div class="card-actions">
-                                <button class="btn btn-primary btn-block">View all</button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
                 <!-- Nama User -->
                 <span>|</span><span id="navbarUser" style="display:none" class="relative font-semibold text-lg px-2 cursor-pointer
                             after:content-[''] after:absolute after:left-1/2 after:-bottom-0.5
@@ -195,6 +170,12 @@
                             <button class="btn btn-outline w-full mt-4" @click="step = 'choose'; bank = ''">
                                 ← Kembali
                             </button>
+
+                            <!-- Hapus Button -->
+                            <button class="btn w-full mt-2 bg-red-500 text-white border-none hover:bg-red-600"
+                                @click="$dispatch('open-cancel-modal', { orderId: '{{ $order->order_id }}' })">
+                                Batal
+                            </button>
                         </div>
                     </template>
 
@@ -289,15 +270,43 @@
     </div>
 
 
+    <!-- Modal Konfirmasi Batal -->
+    <div x-data="{ openCancel: false, orderId: null }"
+        @open-cancel-modal.window="openCancel = true; orderId = $event.detail.orderId" x-cloak>
+
+        <!-- Overlay -->
+        <div x-show="openCancel" class="fixed inset-0 bg-black/50 z-40"></div>
+
+        <!-- Modal -->
+        <div x-show="openCancel" class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="bg-white rounded-2xl shadow-lg p-8 w-96 text-center">
+                <h2 class="text-2xl font-bold mb-4 text-red-600">BATALKAN ORDER</h2>
+                <p class="mb-6">Apakah kamu yakin ingin membatalkan order?</p>
+
+                <!-- Tombol Aksi -->
+                <div class="flex justify-between gap-4">
+                    <button @click="openCancel = false"
+                        class="w-1/2 py-2 rounded-lg bg-gray-300 text-black font-medium hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+
+                    <button @click="confirmCancel(orderId); openCancel = false"
+                        class="w-1/2 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition">
+                        Ya, Batalkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     {{-- Use @vite to load the specific scripts needed for this page --}}
     @vite([
-        'resources/js/product.js',
         'resources/js/login.js',
         'resources/js/register.js',
         'resources/js/profil.js',
         'resources/js/logout.js',
         'resources/js/payment.js',
-        'resources/js/orderhistory.js',
     ])
 
 </html>

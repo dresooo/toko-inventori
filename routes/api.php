@@ -67,6 +67,9 @@ Route::post('/payments', [PaymentController::class, 'store']);
 // API untuk ambil detail pembayaran (JSON)
 Route::get('/payments/{order_id}', [PaymentController::class, 'show']);
 
+// API untuk hapus order jika batal
+Route::delete('/orders/{orderId}', [OrderController::class, 'delete'])->name('orders.delete');
+
 
 // routes/api.php
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {

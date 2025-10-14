@@ -1,8 +1,14 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 @source "./public/*.{html,js}";
 @plugin "daisyui";
-
+@font-face {
+    font-family: "AfterNight";
+    src: url("/fonts/AfterNight.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';

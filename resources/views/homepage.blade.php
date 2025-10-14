@@ -27,44 +27,44 @@
         <!-- NAVBAR -->
         <div class="navbar bg-base-100 shadow-sm">
             <div class="flex-1">
-                <a href="{{ url('/homepage') }}" class="btn btn-ghost text-4xl p-8">VYNTER&LUNE</a>
+                <a href="{{ url('/homepage') }}" class="btn btn-ghost text-4xl p-8 font-afternight">VYNTER&LUNE</a>
             </div>
             <div class="flex-none flex items-center gap-4">
                 <!-- Notifikasi -->
                 <!-- Notifikasi / Order History Dropdown -->
-<div id="notifBtn" class="dropdown dropdown-end">
-    <!-- Tombol ikon notifikasi -->
-    <div id="notifToggle" tabindex="0" role="button" class="btn btn-ghost btn-circle">
-        <div class="indicator">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 
+                <div id="notifBtn" class="dropdown dropdown-end">
+                    <!-- Tombol ikon notifikasi -->
+                    <div id="notifToggle" tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                        <div class="indicator">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 
                     6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 
                     6.165 6 8.388 6 11v3.159c0 .538-.214 
                     1.055-.595 1.436L4 17h5m6 0v1a3 3 0 
                     11-6 0v-1m6 0H9" />
-            </svg>
-            <!-- Badge jumlah order -->
-            <span class="badge badge-sm indicator-item">
-                <span id="totalOrders">0</span>
-            </span>
-        </div>
-    </div>
+                            </svg>
+                            <!-- Badge jumlah order -->
+                            <span class="badge badge-sm indicator-item">
+                                <span id="totalOrders">0</span>
+                            </span>
+                        </div>
+                    </div>
 
-    <!-- Konten dropdown -->
-    <div id="notifDropdownContent" tabindex="0" class="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-100 shadow">
-        <div class="card-body">
-            <!-- List riwayat order -->
-            <div id="orderHistoryList" class="mt-2 space-y-2"></div>
+                    <!-- Konten dropdown -->
+                    <div id="notifDropdownContent" tabindex="0"
+                        class="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-100 shadow">
+                        <div class="card-body">
+                            <!-- List riwayat order -->
+                            <div id="orderHistoryList" class="mt-2 space-y-2"></div>
 
-            <!-- Tombol Show All -->
-            <div class="card-actions">
-                <button id="showAllOrdersBtn" class="btn btn-primary btn-block">Show All</button>
-            </div>
-        </div>
-    </div>
-</div>
+                            <!-- Tombol Show All -->
+                            <div class="card-actions">
+                                <button id="showAllOrdersBtn" class="btn btn-primary btn-block">Show All</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Nama User -->
                 <span>|</span><span id="navbarUser" style="display:none" class="relative font-semibold text-lg px-2 cursor-pointer

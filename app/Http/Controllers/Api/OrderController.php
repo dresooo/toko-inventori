@@ -354,4 +354,32 @@ public function showDetailHistoryOrder($orderId)
     ], 200, [], JSON_UNESCAPED_UNICODE);
 }
 
+
+
+// === Hapus 1 order berdasarkan order_id ===
+public function delete($orderId)
+{
+    try {
+        $order = Order::find($orderId);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order tidak ditemukan.'
+            ], 404);
+        }
+
+        $order->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Order #{$orderId} berhasil dibatalkan dan dihapus."
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menghapus order: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }
