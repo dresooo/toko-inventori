@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -31,8 +31,10 @@
     <div class="min-h-screen flex flex-col w-full">
         <!-- NAVBAR -->
         <div class="navbar bg-base-100 shadow-sm">
-            <div class="flex-1">
-                <a href="{{ url('/homepage') }}" class="btn btn-ghost text-4xl p-8">VYNTER&LUNE</a>
+            <div class="flex-1 p-2">
+                <a href="{{ url('/homepage') }}" class="btn btn-ghost text-4xl p-8 font-afternight"><span> <img
+                            src="/img/logovynter.png" class="h-18 object-contain"></span> <a></a>
+
             </div>
             <div class="flex-none flex items-center gap-4">
                 <!-- Nama User -->

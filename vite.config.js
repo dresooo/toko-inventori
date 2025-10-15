@@ -23,6 +23,7 @@ export default defineConfig({
                 "./dashboard/stock.js",
                 "./dashboard/orderadmin.js",
                 "./dashboard/notification.js",
+                "./dashboard/dashboard.js",
             ],
             refresh: true,
         }),

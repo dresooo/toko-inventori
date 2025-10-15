@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ProductRecipeController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\AdminNotificationController;
+use App\Http\Controllers\API\DashboardController;
 // Untuk API Product
 Route::apiResource('products', ProductController::class);
 // Edit / Update product
@@ -97,3 +98,6 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
 
 Route::get('/orders/detail/{orderId}', [OrderController::class, 'showDetailHistoryOrder']);
+
+
+Route::get('/dashboard', [DashboardController::class, 'index']);

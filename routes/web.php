@@ -48,6 +48,12 @@ Route::get('/dashboard/notification', function () {
     return view('dashboard.notification');
 })->name('dashboard.notification');
 
+// web.php untuk notification
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+
+
 
 
 
@@ -75,3 +81,5 @@ Route::post('/payments/web', [PaymentController::class, 'storeWeb'])->name('paym
 Route::get('/orderhistory/{orderId}', function () {
     return view('orderhistory');
 });
+
+

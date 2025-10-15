@@ -1,28 +1,29 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
-@source "./public/*.{html,js}";
+
 @plugin "daisyui";
+@plugin "flowbite/plugin";
+
+@source "./public/*.{html,js}";
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../../node_modules/flowbite";
+
 @font-face {
     font-family: "AfterNight";
-    src: url("/fonts/AfterNight.woff2") format("woff2");
+    src: url("../../public/fonts/AfterNight.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@plugin "flowbite/plugin";
-@source "../../node_modules/flowbite";
 @theme {
-    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-afternight: "AfterNight", sans-serif;
+    --font-poppins: "Poppins", sans-serif;
 }
 
 @layer base {
@@ -32,4 +33,11 @@
         margin: 0;
         padding: 0;
     }
+}
+
+/* ===== FIX OKLCH UNTUK EXPORT ===== */
+.fix-oklch * {
+    color: rgb(0 0 0 / var(--tw-text-opacity, 1)) !important;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
+    border-color: rgb(229 231 235 / var(--tw-border-opacity, 1)) !important;
 }

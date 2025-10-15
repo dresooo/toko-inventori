@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>@yield('title', 'Dashboard')</title>
@@ -14,6 +16,24 @@
 </head>
 
 <body>
+    <div class="navbar bg-base-100 shadow-sm">
+        <div class="flex-1 p-2">
+
+        </div>
+        <div class="flex-none flex items-center gap-4">
+            <!-- Notifikasi -->
+
+
+            <!-- Nama User -->
+            <span>|</span><span id="navbarUser" style="display:none" class="relative font-semibold text-lg px-2 cursor-pointer
+                            after:content-[''] after:absolute after:left-1/2 after:-bottom-0.5
+                            after:w-0 after:h-[2px] after:bg-indigo-500
+                            after:transition-all after:duration-300 after:-translate-x-1/2
+                            hover:after:w-full">
+            </span>
+            <button id="openLoginModal" class="btn btn-outline">Login</button>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
         type="button"
@@ -34,11 +54,15 @@
         aria-label="Sidebar">
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
             <h1 class="flex items-center ps-2.5 mb-5">
-                <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">VYNTER&LUNE</span>
+                <div class="flex-1 p-2">
+                    <a href="{{ url('/homepage') }}" class="btn btn-ghost text-4xl p-8 font-afternight"><span> <img
+                                src="/img/logovynter.png" class="h-18 object-contain"></span> <a></a>
+
+                </div>
             </h1>
             <ul class="space-y-2 font-medium">
                 <li>
-                    <a href="#"
+                    <a href="{{ url('/dashboard') }}"
                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -177,6 +201,21 @@
         });
     </script>
 
+    {{-- pangil login modal --}}
+    <x-login-modal />
+    {{-- pangil signup modal --}}
+    <x-register-modal />
+    {{-- Pangil Profil Modal --}}
+    <x-profil-modal />
+
+
+    @vite([
+        'resources/js/dashboard/dashboard.js',
+        'resources/js/login.js',
+        'resources/js/register.js',
+        'resources/js/profil.js',
+        'resources/js/logout.js',
+    ])
 </body>
 
 </html>
