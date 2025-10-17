@@ -1,5 +1,6 @@
 [phases.setup]
 nixPkgs = ['nodejs_20', 'php82', 'php82Packages.composer']
+pure = true  # pastikan environment bersih, menghindari conflict LICENSE
 
 [phases.install]
 cmds = [

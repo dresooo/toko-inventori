@@ -5,19 +5,15 @@ FROM node:20.19.0-alpine AS build-frontend
 
 WORKDIR /app
 
-# Verify Node version
+# Verify Node/NPM
 RUN node --version && npm --version
 
-# Copy package files
+# Copy package files & install dependencies
 COPY package*.json ./
+RUN npm ci --legacy-peer-deps
 
-# Clean install
-RUN npm ci --only=production=false
-
-# Copy source files
+# Copy source code & build
 COPY . .
-
-# Build frontend
 RUN npm run build
 
 # ==========================
@@ -40,14 +36,14 @@ RUN apk add --no-cache \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy project files
+# Copy Laravel project
 COPY . /var/www/html
 
-# Copy built frontend assets
+# Copy frontend build
 COPY --from=build-frontend /app/public/build /var/www/html/public/build
 
 # Install Laravel dependencies
-RUN composer install --optimize-autoloader --no-dev --no-interaction
+RUN composer install --optimize-autoloader --no-dev --no-interaction --prefer-dist
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
@@ -56,5 +52,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expose port
 EXPOSE 8000
 
-# Start command
+# Start Laravel server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
