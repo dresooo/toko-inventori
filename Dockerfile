@@ -1,63 +1,70 @@
-# ==========================
-# Stage 1: Build Frontend
-# ==========================
-FROM node:20 AS build-frontend
+====================================
+Stage 1: Build Frontend dengan Node
+====================================
+FROM node:20-alpine AS build-frontend
 
 WORKDIR /app
 
-# Copy package.json & package-lock.json
-COPY package*.json ./
+Copy package files
+COPY package.json ./
 
-# Install dependencies
-RUN npm install
+Install dependencies
+RUN npm ci --legacy-peer-deps
 
-# Copy seluruh frontend
+Copy source code
 COPY . .
 
-# Build assets Vite/Tailwind
+Build frontend assets
 RUN npm run build
 
-# ==========================
-# Stage 2: PHP + Laravel
-# ==========================
-FROM php:8.2-fpm
+====================================
+Stage 2: PHP Runtime (Production)
+====================================
+FROM php:8.2-cli-alpine
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
+Install dependencies minimal yang diperlukan
+RUN apk add --no-cache \
+    bash \
+    mysql-client \
     libzip-dev \
-    zip \
-    curl \
-    npm \
-    && docker-php-ext-install zip pdo pdo_mysql
+    && docker-php-ext-install zip pdo pdo_mysql \
+    && apk del --purge autoconf g++ make \
+    && rm -rf /tmp/ /var/cache/apk/*
 
-# Copy composer.json & composer.lock
+Install Composer dari image resmi
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+Copy composer files
 COPY composer.json composer.lock ./
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+Install PHP dependencies (production only)
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-interaction \
+    --optimize-autoloader \
+    --prefer-dist
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Copy Laravel app
+Copy aplikasi Laravel
 COPY . .
 
-# Copy built frontend assets
-COPY --from=build-frontend /app/dist ./public/dist
+Copy built assets dari stage 1
+COPY --from=build-frontend /app/public/build ./public/build
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+Set permissions
+RUN mkdir -p storage/framework/{sessions,views,cache} \
+    storage/logs \
+    bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-# Expose port 9000 for php-fpm
-EXPOSE 9000
+Expose port
+EXPOSE 8000
 
-# Start PHP-FPM
-CMD ["php-fpm"]
+Health check (optional)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+  CMD php artisan || exit 1
 
-
-###
+Start command
+CMD ["sh", "-c", "php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
