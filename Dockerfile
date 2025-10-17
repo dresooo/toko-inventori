@@ -38,10 +38,12 @@ RUN mkdir -p /run/nginx
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
-EXPOSE 8080
+# Create start script inline
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'php-fpm -D' >> /start.sh && \
+    echo 'nginx -g "daemon off;"' >> /start.sh && \
+    chmod +x /start.sh
 
-# Start script
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+EXPOSE 8080
 
 CMD ["/start.sh"]
