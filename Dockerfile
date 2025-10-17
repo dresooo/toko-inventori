@@ -1,65 +1,63 @@
-# Build stage untuk frontend
-FROM node:18-alpine AS build-frontend
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend/ .
+# ====================================
+# Stage 1: Build Frontend dengan Node
+# ====================================
+FROM node:20-alpine AS build-frontend
+WORKDIR /app
+# Copy package files
+COPY package*.json ./
+# Install dependencies
+RUN npm ci --legacy-peer-deps
+# Copy source code
+COPY . .
+# Build frontend assets
 RUN npm run build
 
-# PHP Runtime stage
-FROM php:8.2-fpm-alpine
-
+# ====================================
+# Stage 2: PHP Runtime (Production)
+# ====================================
+FROM php:8.2-cli-alpine
 WORKDIR /var/www/html
 
-# Install dependencies dan PHP extensions
+# Install dependencies minimal yang diperlukan
 RUN apk add --no-cache \
     bash \
-    nginx \
     mysql-client \
     libzip-dev \
     && docker-php-ext-install zip pdo pdo_mysql \
     && rm -rf /tmp/* /var/cache/apk/*
 
-# Copy files
-COPY --from=build-frontend /app/frontend/dist ./frontend/dist
-COPY backend/ ./backend/
-COPY index.html ./
+# Install Composer dari image resmi
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Create nginx config
-RUN mkdir -p /run/nginx /var/log/nginx && \
-    echo 'worker_processes 1;' > /etc/nginx/nginx.conf && \
-    echo 'error_log /dev/stdout warn;' >> /etc/nginx/nginx.conf && \
-    echo 'pid /var/run/nginx.pid;' >> /etc/nginx/nginx.conf && \
-    echo 'events { worker_connections 1024; }' >> /etc/nginx/nginx.conf && \
-    echo 'http {' >> /etc/nginx/nginx.conf && \
-    echo '  include /etc/nginx/mime.types;' >> /etc/nginx/nginx.conf && \
-    echo '  default_type application/octet-stream;' >> /etc/nginx/nginx.conf && \
-    echo '  access_log /dev/stdout;' >> /etc/nginx/nginx.conf && \
-    echo '  sendfile on;' >> /etc/nginx/nginx.conf && \
-    echo '  keepalive_timeout 65;' >> /etc/nginx/nginx.conf && \
-    echo '  server {' >> /etc/nginx/nginx.conf && \
-    echo '    listen 8080;' >> /etc/nginx/nginx.conf && \
-    echo '    root /var/www/html;' >> /etc/nginx/nginx.conf && \
-    echo '    index index.html index.php;' >> /etc/nginx/nginx.conf && \
-    echo '    location / {' >> /etc/nginx/nginx.conf && \
-    echo '      try_files $uri $uri/ /index.html;' >> /etc/nginx/nginx.conf && \
-    echo '    }' >> /etc/nginx/nginx.conf && \
-    echo '    location /backend/ {' >> /etc/nginx/nginx.conf && \
-    echo '      try_files $uri $uri/ /backend/index.php?$query_string;' >> /etc/nginx/nginx.conf && \
-    echo '    }' >> /etc/nginx/nginx.conf && \
-    echo '    location ~ \.php$ {' >> /etc/nginx/nginx.conf && \
-    echo '      fastcgi_pass 127.0.0.1:9000;' >> /etc/nginx/nginx.conf && \
-    echo '      fastcgi_index index.php;' >> /etc/nginx/nginx.conf && \
-    echo '      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/nginx.conf && \
-    echo '      include fastcgi_params;' >> /etc/nginx/nginx.conf && \
-    echo '    }' >> /etc/nginx/nginx.conf && \
-    echo '  }' >> /etc/nginx/nginx.conf && \
-    echo '}' >> /etc/nginx/nginx.conf
+# Copy composer files
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies (production only)
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-interaction \
+    --optimize-autoloader \
+    --prefer-dist
+
+# Copy aplikasi Laravel
+COPY . .
+
+# Copy built assets dari stage 1
+COPY --from=build-frontend /app/public/build ./public/build
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html
+RUN mkdir -p storage/framework/{sessions,views,cache} \
+    storage/logs \
+    bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-EXPOSE 8080
+# Expose port
+EXPOSE 8000
 
-# Start both services
-CMD php-fpm -D && nginx -g "daemon off;"
+# Health check (optional)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+  CMD php artisan || exit 1
+
+# Start command
+CMD ["sh", "-c", "php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
