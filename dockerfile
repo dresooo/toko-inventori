@@ -1,21 +1,18 @@
 # ==========================
-# Stage 1: Build Frontend & Composer
+# Stage 1: Build Frontend
 # ==========================
 FROM node:20 AS build-frontend
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json & package-lock.json
+# Copy package files and install dependencies
 COPY package*.json ./
-
-# Install Node dependencies
 RUN npm install
 
-# Copy all project files
+# Copy project files
 COPY . .
 
-# Build assets
+# Build frontend assets
 RUN npm run build
 
 # ==========================
@@ -23,7 +20,6 @@ RUN npm run build
 # ==========================
 FROM php:8.2-fpm
 
-# Set working directory
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -38,23 +34,20 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath xml zip \
     && apt-get clean
 
-# Copy built frontend assets from previous stage
-COPY --from=build-frontend /app/public/build /var/www/html/public/build
-
-# Copy the rest of the Laravel app
+# Copy Laravel app from frontend build stage
 COPY --from=build-frontend /app /var/www/html
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev
+RUN composer install --optimize-autoloader --no-dev --no-interaction
 
-# Permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
+# Expose Railway port
 EXPOSE 8000
 
-# Start Laravel server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Start Laravel using environment port
+CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
