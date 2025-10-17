@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch("http://127.0.0.1:8000/api/orders", {
+            const res = await fetch("/api/orders", {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!stockEl) return; // pastikan ada elemen di HTML
 
     try {
-        const res = await fetch("http://127.0.0.1:8000/api/stocks");
+        const res = await fetch("/api/stocks");
         const data = await res.json();
 
         const stockInfo = data.products.find((p) => p.product_id == productId);

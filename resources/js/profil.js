@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editProfileBtn = document.getElementById("editProfileBtn");
     const editProfileForm = document.getElementById("editProfileForm");
 
-    const apiBase = "http://localhost:8000/api"; // sesuaikan dgn base API kamu
+    const apiBase = "/api"; // sesuaikan dgn base API kamu
     const token = localStorage.getItem("access_token"); // ambil token dari localStorage setelah login
 
     let currentUser = null;
