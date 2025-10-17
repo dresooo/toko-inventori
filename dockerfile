@@ -1,9 +1,8 @@
 # ==========================
-# Stage 1: Build Frontend (Node 20)
+# Stage 1: Build Frontend
 # ==========================
 FROM node:20 AS build-frontend
 
-# Set working directory
 WORKDIR /app
 
 # Copy package.json & package-lock.json
@@ -12,10 +11,10 @@ COPY package*.json ./
 # Install Node dependencies
 RUN npm install
 
-# Copy all project files
+# Copy semua file project
 COPY . .
 
-# Build assets (Tailwind + Vite)
+# Build assets Vite/Tailwind
 RUN npm run build
 
 # ==========================
@@ -23,25 +22,18 @@ RUN npm run build
 # ==========================
 FROM php:8.2-fpm
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
+# Install dependencies sistem
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    zip \
-    curl \
+    git unzip libonig-dev libxml2-dev libzip-dev zip curl \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath xml zip \
     && apt-get clean
 
-# Copy built frontend assets from previous stage
+# Copy hasil build frontend dari stage 1
 COPY --from=build-frontend /app/public/build /var/www/html/public/build
 
-# Copy the rest of the Laravel app
+# Copy seluruh project Laravel
 COPY --from=build-frontend /app /var/www/html
 
 # Install Composer
@@ -50,11 +42,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Fix permissions
+# Permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose Laravel port
+# Expose port Laravel
 EXPOSE 8000
 
-# Start Laravel server
+# Jalankan Laravel
 CMD php artisan serve --host=0.0.0.0 --port=8000
