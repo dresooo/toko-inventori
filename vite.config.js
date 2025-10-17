@@ -13,7 +13,6 @@ export default defineConfig({
                 "resources/js/profil.js",
                 "resources/js/logout.js",
                 "resources/js/order.js",
-                "resources/js/productstock.js",
                 "resources/js/payment.js",
                 "resources/js/orderhistory.js",
                 "resources/js/orderhistorydetail.js",
