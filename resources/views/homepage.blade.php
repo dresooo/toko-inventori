@@ -115,7 +115,7 @@
 
     {{-- Use @vite to load the specific scripts needed for this page --}}
     @vite([
-        'resources/js/product.js',
+        "resources/js/product.js",
         'resources/js/login.js',
         'resources/js/register.js',
         'resources/js/profil.js',

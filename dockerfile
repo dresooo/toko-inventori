@@ -1,15 +1,18 @@
 # ==========================
 # Stage 1: Build Frontend
 # ==========================
-FROM node:20-alpine AS build-frontend
+FROM node:20.19.0-alpine AS build-frontend
 
 WORKDIR /app
+
+# Verify Node version
+RUN node --version && npm --version
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Clean install
+RUN npm ci --only=production=false
 
 # Copy source files
 COPY . .
@@ -20,15 +23,19 @@ RUN npm run build
 # ==========================
 # Stage 2: Laravel + PHP
 # ==========================
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git unzip libonig-dev libxml2-dev libzip-dev zip curl nginx \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath xml zip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+    git \
+    unzip \
+    libzip-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    curl \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath xml zip
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -36,7 +43,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copy project files
 COPY . /var/www/html
 
-# Copy built frontend assets dari stage 1
+# Copy built frontend assets
 COPY --from=build-frontend /app/public/build /var/www/html/public/build
 
 # Install Laravel dependencies
