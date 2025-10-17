@@ -19,24 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const alamat = document.getElementById("signupAddress").value;
 
             try {
-                const response = await fetch(
-                    "http://127.0.0.1:8000/api/register",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Accept: "application/json",
-                        },
-                        body: JSON.stringify({
-                            name,
-                            email,
-                            password,
-                            password_confirmation: password, // harus ada untuk validasi Laravel
-                            no_telp,
-                            alamat,
-                        }),
-                    }
-                );
+                const response = await fetch("/api/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        password_confirmation: password, // harus ada untuk validasi Laravel
+                        no_telp,
+                        alamat,
+                    }),
+                });
 
                 const data = await response.json();
                 console.log(data);
