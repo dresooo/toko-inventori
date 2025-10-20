@@ -129,13 +129,10 @@ window.deleteRawMaterial = async function (materialId, materialName) {
     if (!confirmed) return;
 
     try {
-        const response = await fetch(
-            `http://toko-inventori.test:8080/api/raw-materials/${materialId}`,
-            {
-                method: "DELETE",
-                headers: { Accept: "application/json" },
-            }
-        );
+        const response = await fetch(`/api/raw-materials/${materialId}`, {
+            method: "DELETE",
+            headers: { Accept: "application/json" },
+        });
 
         if (response.status === 204) {
             alert("Bahan baku berhasil dihapus");

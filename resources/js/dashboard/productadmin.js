@@ -231,7 +231,7 @@ window.deleteProduct = async function (productId, productName) {
 
     try {
         const response = await fetch(
-            `http://toko-inventori.test:8080/api/products/${productId}`,
+            `/api/products/${productId}`,
             {
                 method: "DELETE",
                 headers: { Accept: "application/json" },
