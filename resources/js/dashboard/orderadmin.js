@@ -25,7 +25,7 @@ async function fetchOrders() {
         data.forEach((order, index) => {
             const orderStatus = order.status?.trim().toLowerCase();
 
-            // Tentukan badge & displayStatus
+            // badge & displayStatus
             let badgeClass = "badge-neutral";
             let displayStatus = orderStatus;
 

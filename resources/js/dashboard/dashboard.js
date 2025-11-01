@@ -155,7 +155,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// ==== FIX warna OKLCH agar html2canvas tidak error ====
 function replaceOKLCHColorsDeep(element) {
     const walker = document.createTreeWalker(
         element,
@@ -252,22 +251,40 @@ document.getElementById("downloadPDF")?.addEventListener("click", async () => {
         doc.text("Penjualan per Bulan", 20, y);
         y += lineHeight;
 
-        doc.setFont("helvetica", "normal");
         const sales = data.sales_by_month || [];
         if (sales.length === 0) {
+            doc.setFont("helvetica", "normal");
             doc.text("- Belum ada data penjualan bulanan -", 25, y);
             y += lineHeight;
         } else {
-            sales.forEach((m) => {
-                doc.text(
-                    `${m.month_name || "Bulan " + m.month} : ${formatRupiah(
-                        m.total_sales
-                    )}`,
-                    25,
-                    y
-                );
-                y += lineHeight;
+            const tableData = sales.map((m) => [
+                m.month_name || `Bulan ${m.month}`,
+                formatRupiah(m.total_sales),
+            ]);
+
+            doc.autoTable({
+                startY: y,
+                head: [["Bulan", "Total Penjualan"]],
+                body: tableData,
+                theme: "grid",
+                styles: {
+                    font: "helvetica",
+                    fontSize: 10,
+                    lineWidth: 0.2,
+                    cellPadding: 3,
+                    halign: "left",
+                },
+                headStyles: {
+                    fillColor: false,
+                    textColor: 0,
+                    fontStyle: "bold",
+                },
+                margin: { left: 20, right: 20 },
+                tableLineColor: [0, 0, 0],
+                tableLineWidth: 0.2,
             });
+
+            y = doc.lastAutoTable.finalY + 10;
         }
 
         y += 8;

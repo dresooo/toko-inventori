@@ -424,3 +424,68 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (stockEl) stockEl.textContent = "Error memuat stok";
     }
 });
+
+///untuk fitur crop gambar
+let cropper;
+const cropModal = document.getElementById("crop_modal");
+const cropImagePreview = document.getElementById("cropImagePreview");
+const confirmCrop = document.getElementById("confirmCrop");
+
+document.getElementById("uploadImage").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (f) {
+        cropImagePreview.src = f.target.result;
+        cropModal.showModal();
+
+        // Inisialisasi cropper setelah gambar siap
+        cropImagePreview.onload = function () {
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(cropImagePreview, {
+                aspectRatio: 1, // bisa disesuaikan (misalnya 1 untuk square)
+                viewMode: 1,
+                movable: true,
+                zoomable: true,
+                scalable: true,
+                rotatable: false,
+            });
+        };
+    };
+    reader.readAsDataURL(file);
+});
+
+confirmCrop.addEventListener("click", () => {
+    if (!cropper) return;
+    const canvas = cropper.getCroppedCanvas({
+        width: 500,
+        height: 500,
+    });
+
+    // Convert hasil crop ke dataURL dan masukkan ke fabric.js canvas
+    const croppedDataURL = canvas.toDataURL("image/png");
+
+    fabric.Image.fromURL(croppedDataURL, (img) => {
+        img.scaleToWidth(250);
+        img.scaleToHeight(250);
+        img.set({ left: 25, top: 25 });
+
+        // clip ke shape
+        if (borderShape) {
+            const clip = fabric.util.object.clone(borderShape);
+            clip.set({
+                absolutePositioned: true,
+                evented: false,
+                fill: null,
+                stroke: null,
+            });
+            img.clipPath = clip;
+        }
+
+        pinCanvas.add(img).setActiveObject(img);
+        pinCanvas.renderAll();
+    });
+
+    cropModal.close();
+});

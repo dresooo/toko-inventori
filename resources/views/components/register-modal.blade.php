@@ -4,22 +4,23 @@
     <div class="modal-box p-10 max-w-md">
         <h3 class="font-bold text-lg text-center mb-5">Sign Up</h3>
         <form id="signupForm" class="space-y-4 mt-4">
-            <h2>Nama Lengkap</h2>
+            <h2>Nama Lengkap<span class="text-red-500"> *</span></h2>
             <input type="text" id="signupName" placeholder="Nama Lengkap" class="input input-bordered w-full"
                 required />
 
-            <h2>Nomor Telepon</h2>
-            <input type="tel" id="signupPhone" placeholder="Nomor Telepon" class="input input-bordered w-full"
+            <h2>Nomor Handphone<span class="text-red-500"> *</span></h2>
+            <input type="tel" id="signupPhone" placeholder="Nomor Handphone" class="input input-bordered w-full"
                 required />
 
-            <h2>Email</h2>
+            <h2>Email<span class="text-red-500"> *</span></h2>
             <input type="email" id="signupEmail" placeholder="Email" class="input input-bordered w-full" required />
 
-            <h2>Password</h2>
-            <input type="password" id="signupPassword" placeholder="Password" class="input input-bordered w-full"
-                required />
+            <h2>Password<span class="text-red-500"> *</span></h2>
+            <input type="password" id="signupPassword" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$"
+                title="Password harus minimal 6 karakter dan mengandung kombinasi huruf serta angka"
+                placeholder="Password" class="input input-bordered w-full" required />
 
-            <h2>Alamat Lengkap</h2>
+            <h2>Alamat Lengkap<span class="text-red-500"> *</span></h2>
             <textarea id="signupAddress" placeholder="Alamat Lengkap" class="textarea textarea-bordered w-full" rows="3"
                 required></textarea>
 

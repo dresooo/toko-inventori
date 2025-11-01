@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({ email, password }),
                 });
                 const data = await response.json();
-                // console.log(data); // ini bisas
+                // console.log(data); // 
                 if (response.ok) {
-                    console.log(data); // ini bisa
+                    console.log(data); 
                     localStorage.setItem("access_token", data.access_token);
                     localStorage.setItem("user_name", data.user.name);
                     localStorage.setItem("user_type", data.user.user_type);

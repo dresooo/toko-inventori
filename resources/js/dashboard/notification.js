@@ -42,10 +42,10 @@ async function fetchNotifications(showAll = false) {
             return;
         }
 
-        // 🔹 Tampilkan dulu notifikasi baru
+        //  Tampilkan  notifikasi baru
         renderNotifications(notifications, showAll);
 
-        // 🔹 Setelah tampil (dan hanya kalau bukan showAll), tandai sebagai read
+        //  Setelah tampil sebagai read
         if (!showAll) {
             await markAllAsRead();
         }
@@ -55,7 +55,7 @@ async function fetchNotifications(showAll = false) {
     }
 }
 
-// 🔹 Tampilkan pesan error
+//   pesan error
 function renderError(message) {
     const container = document.querySelector("#notification-list");
     if (container) {
@@ -67,7 +67,7 @@ function renderError(message) {
     }
 }
 
-// 🔹 Render notifikasi ke halaman
+// Render notifikasi ke halaman
 function renderNotifications(data, showAll = false) {
     const container = document.querySelector("#notification-list");
     if (!container) {
@@ -91,7 +91,7 @@ function renderNotifications(data, showAll = false) {
     const newNotifs = sortedData.filter((n) => n.is_read === 0);
     const oldNotifs = sortedData.filter((n) => n.is_read === 1);
 
-    // Jika tidak showAll, tampilkan hanya notifikasi baru
+   
     const visibleNotifs = showAll ? sortedData : newNotifs;
 
     // Kalau kosong dan bukan showAll
@@ -122,7 +122,7 @@ function renderNotifications(data, showAll = false) {
         container.appendChild(card);
     });
 
-    // 🔹 Tombol tampilkan riwayat lama
+    //  Tombol tampilkan riwayat lama
     if (!showAll && oldNotifs.length > 0) {
         const showAllBtn = document.createElement("button");
         showAllBtn.textContent = "Tampilkan Semua Riwayat";
@@ -132,7 +132,7 @@ function renderNotifications(data, showAll = false) {
         container.appendChild(showAllBtn);
     }
 
-    // 🔹 Tombol kembali ke notifikasi baru
+    //  Tombol kembali ke notifikasi baru
     if (showAll) {
         const backBtn = document.createElement("button");
         backBtn.textContent = "Kembali ke Notifikasi Baru";
@@ -143,7 +143,7 @@ function renderNotifications(data, showAll = false) {
     }
 }
 
-// 🔹 Hapus notifikasi
+//  Hapus notifikasi
 window.deleteNotification = async function (id) {
     if (!confirm("Yakin hapus notifikasi ini?")) return;
     try {

@@ -7,6 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Order</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <!-- Cropper.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @include('components.login-modal')
@@ -210,7 +213,19 @@
 
             </div>
         </div>
-
+        <dialog id="crop_modal" class="modal">
+            <div class="modal-box max-w-2xl">
+                <h3 class="font-bold text-lg mb-4 text-center">Crop Gambar</h3>
+                <div class="flex justify-center">
+                    <img id="cropImagePreview" class="max-h-[400px]" />
+                </div>
+                <div class="modal-action justify-center mt-4">
+                    <button id="confirmCrop" class="btn btn-primary">Simpan</button>
+                    <button id="cancelCrop" class="btn"
+                        onclick="document.getElementById('crop_modal').close()">Batal</button>
+                </div>
+            </div>
+        </dialog>
         {{-- fOOTER --}}
         <footer class="footer sm:footer-horizontal bg-neutral text-neutral-content p-10">
             <nav>
