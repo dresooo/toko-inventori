@@ -115,6 +115,10 @@ class PaymentController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('payment_success', true);
+        return response()->json([
+        'success' => true,
+        'message' => 'Bukti pembayaran berhasil diunggah. Pesanan Anda sedang diproses.',
+        'order_id' => $request->order_id, // Opsional, bisa digunakan di JS
+    ], 200); // Pastikan status HTTP adalah 200 OK
     }
 }

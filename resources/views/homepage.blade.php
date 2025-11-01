@@ -46,8 +46,7 @@
                     1.055-.595 1.436L4 17h5m6 0v1a3 3 0 
                     11-6 0v-1m6 0H9" />
                             </svg>
-                            <!-- Badge jumlah order -->
-                            <span class="badge badge-sm indicator-item">
+                            <span class="badge badge-sm indicator-item border border-gray-300">
                                 <span id="totalOrders">0</span>
                             </span>
                         </div>
@@ -83,9 +82,10 @@
 
 
         <x-card-display />
+        <x-reason-choose />
         <x-show-product />
-
-
+        <x-how-to-order />
+        <x-cta />
         {{-- fOOTER --}}
         <footer class="footer sm:footer-horizontal bg-neutral text-neutral-content p-10">
             <nav>

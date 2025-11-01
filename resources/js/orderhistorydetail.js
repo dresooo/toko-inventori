@@ -50,10 +50,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                     "Rp" + Number(order.product.harga).toLocaleString("id-ID");
                 document.getElementById("productQuantity").textContent =
                     order.quantity;
+
+                const shippingFee = 20000;
+                const adminFee = 5000;
+                const productSubtotal =
+                    Number(order.total_amount) - shippingFee - adminFee;
+
                 document.getElementById("productSubtotal").textContent =
-                    "Rp" + Number(order.total_amount).toLocaleString("id-ID");
+                    "Rp" + productSubtotal.toLocaleString("id-ID");
                 document.getElementById("summarySubtotal").textContent =
-                    "Rp" + Number(order.total_amount).toLocaleString("id-ID");
+                    "Rp" + productSubtotal.toLocaleString("id-ID");
 
                 const productImg = document.getElementById("productImage");
                 // PERBAIKAN: Gunakan gambar_base64 dari backend (bukan gambar)
@@ -86,9 +92,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 order.shipping_addr || "-";
 
             // === RINGKASAN BIAYA ===
-            const adminFee = 2000;
-            const shippingFee = 10000;
-            const total = Number(order.total_amount) + adminFee + shippingFee;
+            const shippingFee = 20000; // hanya untuk ditampilkan
+            const adminFee = 5000; // tidak ada admin fee tambahan
+            const total = Number(order.total_amount); // total sudah termasuk ongkir
 
             document.getElementById("summaryAdmin").textContent =
                 "Rp" + adminFee.toLocaleString("id-ID");
@@ -96,7 +102,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "Rp" + shippingFee.toLocaleString("id-ID");
             document.getElementById("summaryTotal").textContent =
                 "Rp" + total.toLocaleString("id-ID");
-
             // === CUSTOM GAMBAR ===
             if (order.custom_gambar) {
                 const customContainer = document.getElementById(

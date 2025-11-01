@@ -17,7 +17,7 @@
             <div class="flex flex-col items-start gap-6">
                 <html class="scroll-smooth">
                 <!-- Button -->
-                <a href="#product-grid" class="btn btn-primary">Get Started</a>
+                <a href="#step-order" class="btn btn-primary">Get Started</a>
 
                 <!-- Stats -->
                 <div class="stats lg:stats-horizontal shadow">

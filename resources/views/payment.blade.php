@@ -15,6 +15,8 @@
     @include('components.login-modal')
     @include('components.register-modal')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 
@@ -125,17 +127,15 @@
                             </div>
 
                             <!-- Form Upload Bukti -->
-                            <form id="paymentForm" action="{{ route('payments.storeWeb') }}" method="POST"
-                                enctype="multipart/form-data" class="space-y-4" x-data="{ loading: false }"
-                                @submit.prevent="loading = true; $el.submit()">
-                                @csrf
-                                <input type="hidden" name="order_id" value="{{ $order->order_id }}">
+                            <form id="paymentForm" method="POST" enctype="multipart/form-data" class="space-y-4"
+                                x-data="{ loading: false }" @csrf <input type="hidden" name="order_id"
+                                value="{{ $order->order_id }}">
                                 <input type="hidden" name="amount" value="{{ $order->total_amount }}">
-                                <input type="hidden" name="bank" :value="bank">
+                                <input type="hidden" name="bank" x-bind:value="bank">
 
                                 <div>
                                     <label class="block mb-2 font-semibold">Upload Bukti Pembayaran</label>
-                                    <input type="file" name="payment_proof"
+                                    <input accept=".jpg,.jpeg,.png,.pdf" type="file" name="payment_proof"
                                         class="file-input file-input-bordered w-full" required>
                                 </div>
 
@@ -229,20 +229,33 @@
                 </div>
             </div>
         </div>
+
+
         <div x-data="{ open: {{ session('payment_success') ? 'true' : 'false' }} }" x-cloak>
+
             <!-- Overlay -->
+
             <div x-show="open" class="fixed inset-0 bg-black/50 z-40"></div>
 
-            <!-- Modal -->
-            <div x-show="open" class="fixed inset-0 flex items-center justify-center z-50">
-                <div class="bg-white rounded-lg shadow-lg p-8 w-96 text-center">
-                    <h2 class="text-2xl font-bold mb-4">Pembayaran Berhasil!</h2>
-                    <p class="mb-6">Terima kasih, pembayaran Anda berhasil dikirim dan menunggu verifikasi.</p>
-                    <button @click="window.location.href='/homepage'" class="btn btn-primary w-full">OK</button>
-                </div>
-            </div>
-        </div>
 
+
+            <!-- Modal -->
+
+            <div x-show="open" class="fixed inset-0 flex items-center justify-center z-50">
+
+                <div class="bg-white rounded-lg shadow-lg p-8 w-96 text-center">
+
+                    <h2 class="text-2xl font-bold mb-4">Pembayaran Berhasil!</h2>
+
+                    <p class="mb-6">Terima kasih, pembayaran Anda berhasil dikirim dan menunggu verifikasi.</p>
+
+                    <button @click="window.location.href='/homepage'" class="btn btn-primary w-full">OK</button>
+
+                </div>
+
+            </div>
+
+        </div>
 
 
         {{-- fOOTER --}}

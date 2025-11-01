@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.ok) {
                 alert("Order berhasil dibuat!");
 
-                // ✅ Redirect ke halaman payment
+                //  Redirect ke halaman payment
                 const orderId = data.order?.order_id;
                 const paymentUrl = data.payment_url || `/payment/${orderId}`;
                 window.location.href = paymentUrl;
