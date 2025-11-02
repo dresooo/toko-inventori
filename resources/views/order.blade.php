@@ -140,6 +140,7 @@
                                 <label class="label text-xl font-semibold mb-2">Custom Gambar</label>
                                 <input type="file" id="uploadImage" name="custom_gambar" accept=".jpg,.jpeg,.png"
                                     class="file-input file-input-bordered w-full">
+
                             </div>
 
                             <!-- Canvas preview -->
