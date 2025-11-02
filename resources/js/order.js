@@ -270,7 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (bgShape) bgShape.set("fill", "#000");
         pinCanvas.renderAll();
     });
-
+    console.log("Product type:", productType);
+    console.log("Border shape:", borderShape);
     // ============================
     // Upload + Crop Gambar (fix bentrok)
     // ============================
