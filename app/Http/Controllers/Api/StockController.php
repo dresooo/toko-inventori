@@ -39,7 +39,7 @@ class StockController extends Controller
                 }
             }
 
-            // 🧭 Tentukan flag stok dengan 3 level
+            // Tentukan flag stok dengan 3 level
             $flag = 'normal';
             if ($max <= 0) {
                 $flag = 'critical';
@@ -49,13 +49,13 @@ class StockController extends Controller
                 $flag = 'low';
             }
 
-                        // 🔁 Update flag hanya jika berubah
+                        //  Update flag hanya jika berubah
             if ($product->stock_flag !== $flag) {
                 $oldFlag = $product->stock_flag;
                 $product->stock_flag = $flag;
                 $product->save();
 
-                // 🎯 Tentukan pesan sesuai dengan kondisi stok
+                // Tentukan pesan sesuai dengan kondisi stok
                 $statusMessage = match ($flag) {
                     'critical' => "Stok produk '{$product->nama}' sudah habis. Segera lakukan restock!",
                     'need_restock' => "Stok produk '{$product->nama}' sangat menipis. Mohon segera restock sebelum habis.",
@@ -63,7 +63,7 @@ class StockController extends Controller
                     default => null,
                 };
 
-                // 🔔 Kirim notifikasi hanya jika memang perlu
+                // Kirim notifikasi hanya jika memang perlu
                 if ($statusMessage) {
                     $admins = User::where('user_type', 'admin')->get();
 

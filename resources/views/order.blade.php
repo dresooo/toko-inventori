@@ -63,21 +63,24 @@
 
                             <!-- Nama Lengkap -->
                             <div>
-                                <label class="label text-xl font-semibold mb-2">Nama Lengkap</label>
+                                <label class="label text-xl font-semibold mb-2">Nama Lengkap<span class="text-red-500">
+                                        *</span></label>
                                 <input type="text" name="full_name" placeholder="Masukkan nama lengkap"
                                     class="input input-bordered w-full" required>
                             </div>
 
                             <!-- Nomor Telepon -->
                             <div>
-                                <label class="label text-xl font-semibold mb-2">Nomor Telepon</label>
+                                <label class="label text-xl font-semibold mb-2">Nomor Telepon<span class="text-red-500">
+                                        *</span></label>
                                 <input type="text" name="phone_number" placeholder="Contoh: 08123456789"
                                     class="input input-bordered w-full" required>
                             </div>
 
                             <!-- Quantity -->
                             <div>
-                                <label class="label text-xl font-semibold mb-2">Quantity</label>
+                                <label class="label text-xl font-semibold mb-2">Quantity<span class="text-red-500">
+                                        *</span></label>
                                 <div class="flex items-center">
                                     <button type="button" id="decreaseQty" class="btn btn-square btn-outline">-</button>
                                     <input id="quantityInput" type="number" name="quantity" min="1" value="1"
@@ -89,7 +92,8 @@
                             <!-- Domisili -->
                             <div class="space-y-4">
                                 <div>
-                                    <label class="label text-lg font-medium mb-2">Provinsi</label>
+                                    <label class="label text-lg font-medium mb-2">Provinsi<span class="text-red-500">
+                                            *</span></label>
                                     <select id="provinsi" name="provinsi" class="select select-bordered w-full"
                                         required>
                                         <option value="">Pilih Provinsi</option>
@@ -97,14 +101,16 @@
                                 </div>
 
                                 <div>
-                                    <label class="label text-lg font-medium mb-2">Kota/Kabupaten</label>
+                                    <label class="label text-lg font-medium mb-2">Kota/Kabupaten<span
+                                            class="text-red-500"> *</span></label>
                                     <select id="kota" name="kota" class="select select-bordered w-full" required>
                                         <option value="">Pilih Kota/Kabupaten</option>
                                     </select>
                                 </div>
 
                                 <div>
-                                    <label class="label text-lg font-medium mb-2">Kecamatan</label>
+                                    <label class="label text-lg font-medium mb-2">Kecamatan<span class="text-red-500">
+                                            *</span></label>
                                     <select id="kecamatan" name="kecamatan" class="select select-bordered w-full"
                                         required>
                                         <option value="">Pilih Kecamatan</option>
@@ -112,7 +118,8 @@
                                 </div>
 
                                 <div>
-                                    <label class="label text-lg font-medium mb-2">Kelurahan/Desa</label>
+                                    <label class="label text-lg font-medium mb-2">Kelurahan/Desa<span
+                                            class="text-red-500"> *</span></label>
                                     <select id="kelurahan" name="kelurahan" class="select select-bordered w-full"
                                         required>
                                         <option value="">Pilih Kelurahan</option>
@@ -120,14 +127,16 @@
                                 </div>
 
                                 <div>
-                                    <label class="label text-lg font-medium mb-2">Kode Pos</label>
+                                    <label class="label text-lg font-medium mb-2">Kode Pos<span class="text-red-500">
+                                            *</span></label>
                                     <input type="text" name="kode_pos" placeholder="Masukkan kode pos"
                                         class="input input-bordered w-full" required>
                                 </div>
 
                                 <!-- Alamat Lengkap -->
                                 <div>
-                                    <label class="label text-lg font-medium mb-2">Alamat Lengkap</label>
+                                    <label class="label text-lg font-medium mb-2">Alamat Lengkap<span
+                                            class="text-red-500"> *</span></label>
                                     <textarea name="shipping_addr" rows="3"
                                         placeholder="Masukkan alamat lengkap (jalan, nomor rumah, RT/RW)"
                                         class="textarea textarea-bordered w-full" required></textarea>
@@ -137,7 +146,8 @@
                             <!-- Custom Gambar -->
                             <input type="hidden" id="productType" value="{{ $product->product_type }}">
                             <div>
-                                <label class="label text-xl font-semibold mb-2">Custom Gambar</label>
+                                <label class="label text-xl font-semibold mb-2">Custom Gambar<span class="text-red-500">
+                                        *</span></label>
                                 <input type="file" id="uploadImage" name="custom_gambar" accept=".jpg,.jpeg,.png"
                                     class="file-input file-input-bordered w-full">
 

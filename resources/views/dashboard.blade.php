@@ -14,7 +14,7 @@
             <p class="text-gray-500 text-sm md:text-base">Selamat datang! Berikut ringkasan bisnis Anda hari ini.</p>
         </div>
 
-        {{-- 1️⃣ Statistik Utama dengan Icon & Animasi --}}
+        {{-- 1️ Statistik Utama dengan Icon & Animasi --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Total Pendapatan -->
             <div
@@ -93,7 +93,7 @@
             </div>
         </div>
 
-        {{-- 2️⃣ Grafik Penjualan & Top Produk --}}
+        {{-- 2️ Grafik Penjualan & Top Produk --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <!-- Grafik Penjualan -->
             <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden animate-fadeInUp">
@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            {{-- 3️⃣ Top Produk Terlaris --}}
+            {{-- 3️ Top Produk Terlaris --}}
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden animate-fadeInUp">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">

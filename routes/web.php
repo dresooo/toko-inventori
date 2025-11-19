@@ -82,4 +82,5 @@ Route::get('/orderhistory/{orderId}', function () {
     return view('orderhistory');
 });
 
-
+//routes untuk delete order
+Route::delete('/orders/{id}', [OrderController::class, 'delete']);
