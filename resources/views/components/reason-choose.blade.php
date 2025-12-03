@@ -19,6 +19,7 @@
             </div>
 
             <!-- Fully Customizable -->
+            <!-- Fully Customizable -->
             <div class="text-center p-6 rounded-2xl transition-transform duration-300 hover:scale-105 bg-base-200">
                 <div class="flex justify-center mb-4 text-primary">
                     <svg class="w-17 h-17 text-gray-800 dark:text-white" aria-hidden="true"
