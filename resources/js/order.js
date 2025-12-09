@@ -5,10 +5,14 @@ const quantityInput = document.getElementById("quantityInput");
 const decreaseBtn = document.getElementById("decreaseQty");
 const increaseBtn = document.getElementById("increaseQty");
 
+
+//update tampilan banyak item yang di beli
 function updateQuantity(change) {
     let qty = parseInt(quantityInput.value) || 1;
     qty = Math.max(1, qty + change);
     quantityInput.value = qty;
+
+    //hitung berdasarkan quantity value nya
     hitungSubtotal();
 }
 
@@ -88,6 +92,8 @@ const adminEl = document.getElementById("biaya-admin");
 const pengirimanEl = document.getElementById("biaya-pengiriman");
 
 function hitungSubtotal() {
+
+    //cek element kalau tidak ditemukan berhenti
     if (!hargaProdukEl || !quantityInput || !subtotalEl) return;
 
     const hargaProduk = parseInt(hargaProdukEl.dataset.harga) || 0;

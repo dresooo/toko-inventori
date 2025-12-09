@@ -1,3 +1,5 @@
+
+//Menunggu Halaman Di load
 document.addEventListener("DOMContentLoaded", () => {
     // Set ID dari Frontend
     const navbarUser = document.getElementById("navbarUser");
@@ -6,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editProfileBtn = document.getElementById("editProfileBtn");
     const editProfileForm = document.getElementById("editProfileForm");
 
-    const apiBase = "/api"; // sesuaikan dgn base API kamu
+    const apiBase = "/api"; 
     const token = localStorage.getItem("access_token"); // ambil token dari localStorage setelah login
 
     let currentUser = null;

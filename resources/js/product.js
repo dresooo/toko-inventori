@@ -6,10 +6,12 @@ async function loadProducts() {
     // Gabungkan manual pakai product_id
     const merged = products.map((p) => {
         const stockInfo = stockData.products.find(
+            //cek stock product
             (s) => s.product_id === p.product_id
         );
         return {
             ...p,
+            //kalau max prodduction gada di isi 0
             max_production: stockInfo ? stockInfo.max_production : 0,
         };
     });
@@ -18,6 +20,7 @@ async function loadProducts() {
     const grid = document.getElementById("product-grid");
     grid.innerHTML = "";
 
+    //looping untuk tampilkan semua product yang ada
     merged.forEach((product, index) => {
         // Card
         const card = document.createElement("div");
@@ -154,19 +157,20 @@ async function loadProducts() {
 
 //untuk handle click buy now tapi beum login
 window.handleBuyNow = function (productId, stock) {
+    //cek token di local storage
     const token = localStorage.getItem("access_token");
 
-    // cek stok dulu
+    // cek stok kalau abis tampilin alert
     if (stock <= 0) {
         alert("Maaf, stok produk ini sudah habis.");
         return; // stop
     }
 
-    // Cek login
+    // Cek login kalau token gada
     if (!token) {
         const loginModal = document.getElementById("login_modal");
         if (loginModal) {
-            loginModal.showModal(); // 🟢 langsung munculkan modal login
+            loginModal.showModal(); // langsung munculkan modal login
         } else {
             alert("Silakan login terlebih dahulu sebelum membeli produk.");
         }
@@ -174,12 +178,15 @@ window.handleBuyNow = function (productId, stock) {
     }
 
     // kalau sudah login & stok ada
+    //redirect ke order sesuai product id
     window.location.href = `/order/${productId}`;
 };
+
 // buka modal
 window.openProductModal = function (index) {
     const modal = document.getElementById(`product_modal_${index}`);
     if (modal) modal.showModal();
 };
 
+// pas ke homepad load product dahulu
 window.onload = loadProducts;

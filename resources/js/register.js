@@ -1,8 +1,11 @@
+//tunggu halaman selesai ke load
 document.addEventListener("DOMContentLoaded", () => {
+    //ambil if element
     const signupBtn = document.getElementById("openSignupModal");
     const signupModal = document.getElementById("signup_modal");
     const loginModal = document.getElementById("login_modal");
 
+    //tampilkan modal signup
     if (signupBtn) {
         signupBtn.addEventListener("click", () => signupModal.showModal());
     }
@@ -12,12 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
         signupForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
+            //ambil selusuh value dari field input
             const name = document.getElementById("signupName").value;
             const email = document.getElementById("signupEmail").value;
             const password = document.getElementById("signupPassword").value;
             const no_telp = document.getElementById("signupPhone").value;
             const alamat = document.getElementById("signupAddress").value;
 
+            //kirim data ke api register
             try {
                 const response = await fetch("/api/register", {
                     method: "POST",
@@ -29,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         name,
                         email,
                         password,
-                        password_confirmation: password, // harus ada untuk validasi Laravel
+                        password_confirmation: password,
                         no_telp,
                         alamat,
                     }),

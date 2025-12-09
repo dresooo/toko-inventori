@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const orderHistoryList = document.getElementById("orderHistoryList");
     const showAllBtn = document.getElementById("showAllOrdersBtn");
 
-    // 🟩 Fungsi terjemahkan status
+    // Fungsi terjemahkan status
     function translateStatus(status) {
         const map = {
             awaiting_payment: "Menunggu Pembayaran",
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return map[status] || status;
     }
 
-    // 🟦 Fungsi untuk memberi warna badge status dengan style lebih modern
+    // Fungsi untuk memberi warna badge status dengan style lebih modern
     function getStatusBadge(status) {
         const badgeStyles = {
             awaiting_payment:
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    // 🎨 Icon untuk setiap status
+    // Icon untuk setiap status
     function getStatusIcon(status) {
         const icons = {
             awaiting_payment: "⏳",

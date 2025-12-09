@@ -215,7 +215,7 @@
                         <div id="paymentProofContainer" class="mt-6 pt-6 border-t hidden">
                             <h3 class="font-semibold text-gray-800 mb-3">Bukti Pembayaran</h3>
                             <img id="paymentProof" src="" alt="Payment Proof"
-                                class="w-full rounded-lg border-2 border-gray-200 cursor-pointer hover:opacity-90 transition">
+                                class="w-50 rounded-lg border-2 border-gray-200 cursor-pointer hover:opacity-90 transition">
                         </div>
 
                         <!-- Action Buttons -->

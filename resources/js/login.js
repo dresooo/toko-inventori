@@ -1,9 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+    //muat semua modal form dan tombol setiap kali halaman di load
     updateNavbar();
     // tampilkan modal
     const loginBtn = document.getElementById("openLoginModal");
     const loginModal = document.getElementById("login_modal");
 
+    //Tampilkan Login Modal Ketika Click Login
     loginBtn.addEventListener("click", () => loginModal.showModal());
 
     // handle login form submit
@@ -11,10 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .getElementById("loginForm")
         .addEventListener("submit", async function (e) {
             e.preventDefault();
+            //ambil value dari field email dan password
             const email = document.getElementById("loginEmail").value;
             const password = document.getElementById("loginPassword").value;
 
             try {
+                //kirim post request ke api
                 const response = await fetch("/api/login", {
                     method: "POST",
                     headers: {
@@ -23,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     },
                     body: JSON.stringify({ email, password }),
                 });
+
+                //respond dari api yang di hit
                 const data = await response.json();
                 // console.log(data); // 
                 if (response.ok) {
@@ -34,7 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     //update navbar ketika berhasil login
                     updateNavbar();
                     loginModal.close(); // tutup modal setelah login sukses
-
+                    
+                    //redirect user berfasarkan user type
                     if (data.user.user_type === "admin") {
                         window.location.href = "/dashboard";
                     } else {

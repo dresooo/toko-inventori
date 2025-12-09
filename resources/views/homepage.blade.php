@@ -28,7 +28,7 @@
         <div class="navbar bg-base-100 shadow-sm">
             <div class="flex-1 p-2">
                 <a href="{{ url('/homepage') }}" class="btn btn-ghost text-4xl p-8 font-afternight"><span> <img
-                            src="/img/logovynter.png" class="h-18 object-contain"></span> <a></a>
+                            src="/img/logovynter.png" class="h-18 object-contain"></span> </a>
 
             </div>
             <div class="flex-none flex items-center gap-4">
@@ -78,12 +78,16 @@
             </div>
         </div>
 
-
-
-
+        {{-- Modal untuk Card Ekspresikan --}}
         <x-card-display />
+
+        {{-- Modal untuk tampilan Why Choose Us --}}
         <x-reason-choose />
+
+        {{-- Modal utnuk pemangilan Show Product Card --}}
         <x-show-product />
+
+        {{-- Modal untuk how to order --}}
         <x-how-to-order />
         <x-cta />
         {{-- fOOTER --}}
